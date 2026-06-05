@@ -1,0 +1,36 @@
+---
+---
+
+<section class="py-20 px-4 bg-seashell-50">
+  <div class="max-w-4xl mx-auto">
+    <h2 class="text-3xl font-bold text-seashell-900 mb-10 text-center">Explorar Repartos</h2>
+    
+    <div class="grid grid-cols-2 gap-4">
+      {[
+        "Camilo Cienfuegos",
+        "Nuevo Bayamo",
+        "San Juan",
+        "El Cristo",
+        "Jesús Menéndez",
+        "Las Caobas",
+        "Roberto Reyes",
+        "Micro V",
+        "Reparto Ojeda",
+        "El Polígono"
+      ].map((reparto, index) => (
+        <div 
+          key={index}
+          class="bg-white p-4 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300 border border-seashell-100 flex items-center gap-4 cursor-pointer hover:border-seashell-300"
+        >
+          <div class="flex-shrink-0 w-12 h-12 bg-seashell-100 rounded-full flex items-center justify-center">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-seashell-700">
+              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0Z"></path>
+              <circle cx="12" cy="10" r="3"></circle>
+            </svg>
+          </div>
+          <span class="text-base font-semibold text-seashell-800">{reparto}</span>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>

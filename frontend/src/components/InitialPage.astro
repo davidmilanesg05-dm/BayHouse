@@ -1,0 +1,63 @@
+---
+import { PulsatingButton } from "@/components/ui/pulsating-button"
+---
+<div id="initial-page" class="fixed inset-0 z-50 flex items-center justify-center bg-black">
+    <img src="/background.jpg" alt="Background" class="absolute inset-0 object-cover w-full h-full" />
+    <img id="church_image" src="/church.png" alt="Church" class="relative z-10 object-cover w-full h-full" />
+    <div class=" absolute w-full h-full bg-black z-20 opacity-55"></div>
+    
+    <div id="cta-container" class="absolute z-20 flex flex-col items-center text-white opacity-0">
+        <h1 class="text-5xl font-bold text-center tracking-tight uppercase">Bienvenido a<br/>BayHouse</h1>
+        <p class="mt-4 max-w-2xl text-xl text-center">
+            Explora nuestra exclusiva selección de propiedades y encuentra el lugar perfecto para llamar hogar en la encantadora e histórica ciudad de Bayamo.
+        </p>
+        <PulsatingButton id="enter-button" client:visible variant="ripple" className="bg-seashell-900 text-seashell-300 border-seashell-400 mt-4 text-base font-semibold">ENTRAR <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" data-icon="SvgArrowRight" aria-hidden="true"><path d="M21 12H3m11.573 6.427L21 12l-6.427-6.427"></path></svg></PulsatingButton> 
+    </div>
+</div>
+
+<script>
+    import { gsap } from 'gsap';
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const initialPage = document.getElementById('initial-page');
+        const enterButton = document.getElementById('enter-button');
+        const hasVisited = localStorage.getItem('hasVisitedBayHouse');
+
+        if (hasVisited) {
+            // If already visited, hide the page immediately
+            if(initialPage) initialPage.style.display = 'none';
+        } else {
+            // First visit: run the animations
+            gsap.fromTo('#church_image', 
+                { y: '100%', scale: 0.5, opacity: 0 },
+                {
+                    duration: 2,
+                    y: 0,
+                    scale: 1,
+                    opacity: 1,
+                    ease: 'power3.out',
+                    onComplete: () => {
+                        gsap.to('#cta-container', { duration: 1, opacity: 1, y: -20 });
+                    }
+                }
+            );
+        }
+
+        // Add click event for the enter button
+        enterButton?.addEventListener('click', () => {
+            // Save the visit to localStorage
+            localStorage.setItem('hasVisitedBayHouse', 'true');
+
+            // Fade out the initial page
+            gsap.to('#initial-page', {
+                duration: 1,
+                opacity: 0,
+                onComplete: () => {
+                    if (initialPage) {
+                        initialPage.style.display = 'none';
+                    }
+                }
+            });
+        });
+    });
+</script>

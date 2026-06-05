@@ -1,0 +1,28 @@
+---
+import Navbar from '@/components/Navbar.astro';
+import Layout from '../layouts/Layout.astro';
+import Hero from '@/components/Hero.astro';
+import Casas from '@/components/Casas.astro';
+import Recomendados from '@/components/Recomendados.astro';
+import Anuncio from '@/components/Anuncio.astro';
+import Novedades from '@/components/Novedades.astro';
+import CasaAnimada from '@/components/CasaAnimada.astro';
+import Explorar from '@/components/Explorar.astro';
+import CircuitoEspecial from '@/components/CircuitoEspecial.astro';
+import CTA from '@/components/CTA.astro';
+---
+
+<Layout>
+	<main class="bg-seashell-50 text-seashell-900">
+		<Navbar />
+		<Hero/>
+		<Casas/>
+		<Novedades/>
+		<CasaAnimada/>
+		<Explorar/>
+		<CircuitoEspecial/>
+		<CTA/>
+		<Recomendados/>
+		<Anuncio/>
+	</main>
+</Layout>

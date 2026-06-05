@@ -1,0 +1,25 @@
+---
+const { pathname } = Astro.url;
+import { AnimatedThemeToggler } from "@/components/ui/animated-theme-toggler"
+const isEnglish = pathname.startsWith('/en');
+
+const otherLang = isEnglish ? 'EN' : 'ES';
+const otherLangPath = isEnglish
+  ? pathname.slice(3) || '/'
+  : `/en${pathname === '/' ? '' : pathname}`;
+---
+<header class="flex justify-between items-center p-4 bg-background border-b border-border fixed top-0 left-0 right-0 z-[1000]">
+  <div>
+    <a href="/" class="text-2xl font-bold text-foreground no-underline">BAYHOUSE</a>
+  </div>
+  <div class="flex items-center gap-4">
+    <a href={otherLangPath} class="flex gap-1 text-foreground no-underline text-base px-4 py-2 border border-border rounded-full font-bold bg-background hover:bg-accent transition-colors">
+      {otherLang} 
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" data-icon="SvgGlobe" aria-hidden="true"><path d="M12 2.991A9.009 9.009 0 112.991 12 9.01 9.01 0 0112 2.991zM2.991 12h18.018M12 2.991A13.783 13.783 0 0115.6 12a13.783 13.783 0 01-3.6 9.009A13.783 13.783 0 018.4 12 13.783 13.783 0 0112 2.991z"></path></svg>
+    </a>
+    <AnimatedThemeToggler variant="diamond" />
+    <button class="bg-transparent border-none text-2xl cursor-pointer">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" data-icon="SvgMenu" aria-hidden="true"><path d="M3 12h18M3 6h18M3 18h18"></path></svg>
+    </button>
+  </div>
+</header>

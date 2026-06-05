@@ -1,0 +1,194 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout>
+  <main class="bg-seashell-50 text-seashell-900 min-h-screen">
+    <!-- Back Button -->
+    <section class="pt-8 px-4">
+      <div class="max-w-7xl mx-auto">
+        <a href="/" class="flex items-center gap-2 text-seashell-600 hover:text-seashell-900 transition-colors mb-8">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="m15 18-6-6 6-6"></path>
+          </svg>
+          <span class="font-semibold">Volver</span>
+        </a>
+      </div>
+    </section>
+
+    <!-- Hero Section -->
+    <section class="pb-16 px-4">
+      <div class="max-w-7xl mx-auto text-center">
+        <h1 class="text-5xl md:text-6xl font-bold mb-6">Sobre <span class="text-seashell-600">BayHouse</span></h1>
+        <p class="text-xl md:text-2xl text-seashell-600 max-w-3xl mx-auto">Tu inmobiliaria de confianza en Bayamo, conectando personas con sus hogares soñados desde 2010.</p>
+      </div>
+    </section>
+
+    <!-- About Content -->
+    <section class="py-16 px-4 bg-white">
+      <div class="max-w-7xl mx-auto">
+        <div class="grid md:grid-cols-2 gap-12 items-center">
+          <div>
+            <img 
+              src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&h=600&fit=crop" 
+              alt="Nuestra Oficina" 
+              class="rounded-2xl shadow-xl w-full"
+            />
+          </div>
+          <div>
+            <h2 class="text-3xl font-bold mb-6">Nuestra Historia</h2>
+            <p class="text-seashell-600 mb-4 text-lg">
+              BayHouse nació con la misión de transformar la experiencia de comprar y vender propiedades en Bayamo. 
+              Fundada en 2010 por un grupo de profesionales apasionados por el sector inmobiliario.
+            </p>
+            <p class="text-seashell-600 mb-4 text-lg">
+              A lo largo de los años, hemos ayudado a cientos de familias a encontrar su hogar ideal y a vender sus propiedades 
+              al mejor precio del mercado.
+            </p>
+            <p class="text-seashell-600 text-lg">
+              Nuestro compromiso con la excelencia y la atención personalizada nos ha convertido en la inmobiliaria 
+              de referencia en toda la región.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Values -->
+    <section class="py-16 px-4 bg-seashell-100">
+      <div class="max-w-7xl mx-auto">
+        <h2 class="text-3xl font-bold text-center mb-12">Nuestros Valores</h2>
+        <div class="grid md:grid-cols-3 gap-8">
+          {[
+            {
+              icon: "shield",
+              title: "Confianza",
+              description: "Transparencia y honestidad en cada transacción inmobiliaria."
+            },
+            {
+              icon: "users",
+              title: "Clientes Primero",
+              description: "Tu satisfacción es nuestra prioridad número uno."
+            },
+            {
+              icon: "target",
+              title: "Excelencia",
+              description: "Buscamos la perfección en cada servicio que ofrecemos."
+            }
+          ].map((value) => (
+            <div class="bg-white p-8 rounded-2xl shadow-lg text-center">
+              <div class="w-16 h-16 bg-seashell-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                {value.icon === "shield" && (
+                  <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-seashell-600">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                  </svg>
+                )}
+                {value.icon === "users" && (
+                  <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-seashell-600">
+                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="9" cy="7" r="4"></circle>
+                    <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                    <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                  </svg>
+                )}
+                {value.icon === "target" && (
+                  <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-seashell-600">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <circle cx="12" cy="12" r="6"></circle>
+                    <circle cx="12" cy="12" r="2"></circle>
+                  </svg>
+                )}
+              </div>
+              <h3 class="text-xl font-bold mb-3">{value.title}</h3>
+              <p class="text-seashell-600">{value.description}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- Stats -->
+    <section class="py-16 px-4 bg-seashell-900 text-white">
+      <div class="max-w-7xl mx-auto">
+        <div class="grid md:grid-cols-4 gap-8 text-center">
+          {[
+            { number: "500+", label: "Propiedades Vendidas" },
+            { number: "14+", label: "Años de Experiencia" },
+            { number: "1000+", label: "Clientes Satisfechos" },
+            { number: "12", label: "Agentes Profesionales" }
+          ].map((stat) => (
+            <div>
+              <div class="text-5xl font-bold mb-2 text-seashell-400">{stat.number}</div>
+              <div class="text-seashell-300">{stat.label}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- Testimonials -->
+    <section class="py-16 px-4 bg-white">
+      <div class="max-w-7xl mx-auto">
+        <h2 class="text-3xl font-bold text-center mb-12">Lo que dicen nuestros clientes</h2>
+        <div class="grid md:grid-cols-3 gap-8">
+          {[
+            {
+              name: "Ana Martínez",
+              role: "Compradora de Casa",
+              comment: "BayHouse me ayudó a encontrar la casa perfecta para mi familia. El proceso fue súper fácil y los agentes muy profesionales.",
+              image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&h=400&fit=crop"
+            },
+            {
+              name: "Roberto López",
+              role: "Vendedor",
+              comment: "Vendí mi propiedad en tiempo récord gracias a BayHouse. Obtuvimos un precio excelente y el servicio fue impecable.",
+              image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop"
+            },
+            {
+              name: "Laura Castillo",
+              role: "Inversionista",
+              comment: "Como inversionista, he trabajado con varias inmobiliarias y BayHouse es sin duda la mejor. ¡Totalmente recomendados!",
+              image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&h=400&fit=crop"
+            }
+          ].map((testimonial) => (
+            <div class="bg-seashell-50 p-8 rounded-2xl shadow-lg border border-seashell-100">
+              <div class="flex items-center gap-4 mb-6">
+                <img 
+                  src={testimonial.image} 
+                  alt={testimonial.name} 
+                  class="w-16 h-16 rounded-full object-cover"
+                />
+                <div>
+                  <h3 class="text-lg font-bold">{testimonial.name}</h3>
+                  <p class="text-seashell-600 text-sm">{testimonial.role}</p>
+                </div>
+              </div>
+              <p class="text-seashell-700 text-lg italic">"{testimonial.comment}"</p>
+              <div class="flex gap-1 mt-4">
+                {[1, 2, 3, 4, 5].map((star) => (
+                  <svg key={star} xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="#f59e0b" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                  </svg>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="py-16 px-4 bg-seashell-100">
+      <div class="max-w-4xl mx-auto text-center">
+        <h2 class="text-3xl font-bold mb-6">¿Listo para encontrar tu hogar ideal?</h2>
+        <p class="text-seashell-600 mb-8 text-lg">Contáctanos hoy y déjanos ayudarte en tu camino hacia el hogar de tus sueños.</p>
+        <a 
+          href="/" 
+          class="inline-block bg-seashell-600 text-white px-8 py-4 rounded-xl font-semibold text-lg hover:bg-seashell-700 transition-colors"
+        >
+          Contactarnos
+        </a>
+      </div>
+    </section>
+  </main>
+</Layout>
