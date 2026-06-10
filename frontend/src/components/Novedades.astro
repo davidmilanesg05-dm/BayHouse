@@ -26,8 +26,9 @@
     >
       {[
         {
+          id: "11",
           title: "Penthouse con Terraza",
-          location: "Miami Beach, FL",
+          location: "Camilo Cienfuegos, Bayamo",
           price: "$1,250,000",
           beds: 3,
           baths: 3,
@@ -35,8 +36,9 @@
           image: "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&h=600&fit=crop"
         },
         {
+          id: "12",
           title: "Casa de Playa Exclusive",
-          location: "Santa Mónica, CA",
+          location: "Nuevo Bayamo",
           price: "$3,100,000",
           beds: 5,
           baths: 4,
@@ -44,8 +46,9 @@
           image: "https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=800&h=600&fit=crop"
         },
         {
+          id: "13",
           title: "Loft Industrial Moderno",
-          location: "Brooklyn, NY",
+          location: "San Juan, Bayamo",
           price: "$995,000",
           beds: 2,
           baths: 2,
@@ -53,8 +56,9 @@
           image: "https://images.unsplash.com/photo-1600047509807-ba8f99d2cdde?w=800&h=600&fit=crop"
         },
         {
+          id: "14",
           title: "Mansión con Cancha de Golf",
-          location: "Beverly Hills, CA",
+          location: "El Cristo, Bayamo",
           price: "$5,500,000",
           beds: 6,
           baths: 7,
@@ -62,8 +66,9 @@
           image: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&h=600&fit=crop"
         },
         {
+          id: "15",
           title: "Apartamento Skyline",
-          location: "Chicago, IL",
+          location: "Jesús Menéndez, Bayamo",
           price: "$780,000",
           beds: 2,
           baths: 2,
@@ -71,8 +76,9 @@
           image: "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800&h=600&fit=crop"
         },
         {
+          id: "16",
           title: "Finca con Viñedo",
-          location: "Napa Valley, CA",
+          location: "Las Caobas, Bayamo",
           price: "$2,800,000",
           beds: 4,
           baths: 3,
@@ -80,9 +86,10 @@
           image: "https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?w=800&h=600&fit=crop"
         }
       ].map((casa, index) => (
-        <div 
+        <a 
+          href={`/casa/${casa.id}`}
           key={index}
-          class="min-w-[320px] max-w-[320px] snap-center flex-shrink-0 bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300"
+          class="min-w-[320px] max-w-[320px] snap-center flex-shrink-0 bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300 block hover:scale-[1.02] transition-transform"
         >
           <div class="relative h-48 overflow-hidden">
             <img src={casa.image} alt={casa.title} class="w-full h-full object-cover hover:scale-105 transition-transform duration-300" />
@@ -129,7 +136,7 @@
               </div>
             </div>
           </div>
-        </div>
+        </a>
       ))}
     </div>
     

@@ -1,0 +1,290 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Footer from '../../components/Footer.astro';
+
+export const prerender = false;
+
+const casaData = {
+  id: '1',
+  title: 'Casa Moderna con Piscina',
+  location: 'Camilo Cienfuegos, Bayamo',
+  price: '$850,000',
+  beds: 4,
+  baths: 3,
+  sqft: 2800,
+  garage: true,
+  patio: true,
+  placaLibre: true,
+  tanques: true,
+  cisternas: true,
+  circuitoEspecial: false,
+  description: 'Hermosa casa moderna con piscina en el reparto Camilo Cienfuegos. Cuenta con amplios espacios, terminaciones de primera calidad y ubicación privilegiada.',
+  images: [
+    'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1200&h=800&fit=crop',
+    'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&h=800&fit=crop',
+    'https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=1200&h=800&fit=crop',
+    'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=1200&h=800&fit=crop'
+  ]
+};
+---
+
+<Layout>
+  <div class="bg-white min-h-screen">
+    <!-- Navbar -->
+    <nav class="bg-white border-b border-gray-200 sticky top-0 z-10">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between items-center h-16">
+          <button class="p-2 rounded-full hover:bg-gray-100 transition-colors" onclick="history.back()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="m9 18 6-6-6-6"/>
+            </svg>
+          </button>
+          
+          <div class="flex gap-2">
+            <button class="p-2 rounded-full hover:bg-gray-100 transition-colors">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/>
+                <polyline points="16 6 12 2 8 6"/>
+                <line x1="12" y1="2" x2="12" y2="15"/>
+              </svg>
+            </button>
+            <button class="p-2 rounded-full hover:bg-gray-100 transition-colors">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Slider de Imágenes -->
+    <div class="relative">
+      <div class="aspect-video bg-gray-100">
+        <img id="mainImage" src={casaData.images[0]} alt={casaData.title} class="w-full h-full object-cover"/>
+      </div>
+      
+      <!-- Thumbnails -->
+      <div class="flex gap-2 p-4 overflow-x-auto">
+        {casaData.images.map((img, index) => (
+          <button 
+            key={index}
+            class="flex-shrink-0 w-20 h-16 rounded-lg overflow-hidden border-2 transition-all"
+            class:border-seashell-500={index === 0}
+            class:border-transparent={index !== 0}
+            data-index={index}
+            data-src={img}
+            onclick="changeImage(this)"
+          >
+            <img src={img} alt={`Imagen ${index + 1}`} class="w-full h-full object-cover"/>
+          </button>
+        ))}
+      </div>
+    </div>
+
+    <!-- Contenido Principal -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <!-- Precio y Título -->
+      <div class="mb-8">
+        <div class="text-3xl font-bold text-seashell-900 mb-2">{casaData.price}</div>
+        <h1 class="text-2xl font-semibold text-seashell-800 mb-2">{casaData.title}</h1>
+        <div class="flex items-center gap-2 text-seashell-600">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+            <circle cx="12" cy="10" r="3"/>
+          </svg>
+          <span>{casaData.location}</span>
+        </div>
+      </div>
+
+      <!-- Características -->
+      <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-8">
+        <div class="text-center p-4 bg-gray-50 rounded-xl">
+          <div class="flex justify-center mb-2">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-seashell-600">
+              <path d="M2 4v16"/>
+              <path d="M6 8V4"/>
+              <path d="M10 12V4"/>
+              <path d="M14 16V4"/>
+              <path d="M18 20V4"/>
+              <path d="M22 8V4"/>
+            </svg>
+          </div>
+          <div class="font-semibold">{casaData.beds}</div>
+          <div class="text-sm text-seashell-600">Habitaciones</div>
+        </div>
+
+        <div class="text-center p-4 bg-gray-50 rounded-xl">
+          <div class="flex justify-center mb-2">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-seashell-600">
+              <path d="M12 2v20"/>
+              <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+            </svg>
+          </div>
+          <div class="font-semibold">{casaData.baths}</div>
+          <div class="text-sm text-seashell-600">Baños</div>
+        </div>
+
+        <div class="text-center p-4 bg-gray-50 rounded-xl">
+          <div class="flex justify-center mb-2">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-seashell-600">
+              <rect width="18" height="18" x="3" y="3" rx="2"/>
+              <path d="M3 9h18"/>
+              <path d="M9 21V9"/>
+            </svg>
+          </div>
+          <div class="font-semibold">{casaData.sqft}</div>
+          <div class="text-sm text-seashell-600">m²</div>
+        </div>
+
+        {casaData.garage && (
+          <div class="text-center p-4 bg-gray-50 rounded-xl">
+            <div class="flex justify-center mb-2">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-seashell-600">
+                <path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A2 2 0 0 0 2 12v2a2 2 0 0 0 2 2h2"/>
+                <path d="M6 17H4a2 2 0 0 1-2-2v-2a2 2 0 0 1 2-2h2v6Zm8-6h1a2 2 0 0 1 2 2v6h-3v-8Z"/>
+              </svg>
+            </div>
+            <div class="font-semibold text-green-600">✓</div>
+            <div class="text-sm text-seashell-600">Garage</div>
+          </div>
+        )}
+
+        {casaData.patio && (
+          <div class="text-center p-4 bg-gray-50 rounded-xl">
+            <div class="flex justify-center mb-2">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-seashell-600">
+                <ellipse cx="12" cy="5" rx="9" ry="3"/>
+                <path d="M21 10c0 7-4 11-9 11s-9-4-9-11"/>
+                <ellipse cx="12" cy="5" rx="9" ry="3"/>
+              </svg>
+            </div>
+            <div class="font-semibold text-green-600">✓</div>
+            <div class="text-sm text-seashell-600">Patio</div>
+          </div>
+        )}
+
+        {casaData.placaLibre && (
+          <div class="text-center p-4 bg-gray-50 rounded-xl">
+            <div class="flex justify-center mb-2">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-seashell-600">
+                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+                <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+              </svg>
+            </div>
+            <div class="font-semibold text-green-600">✓</div>
+            <div class="text-sm text-seashell-600">Placa Libre</div>
+          </div>
+        )}
+      </div>
+
+      {casaData.circuitoEspecial && (
+        <div class="mb-8 p-4 bg-yellow-50 border border-yellow-200 rounded-xl">
+          <div class="flex items-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-yellow-600">
+              <circle cx="12" cy="12" r="10"/>
+              <line x1="12" y1="8" x2="12" y2="12"/>
+              <line x1="12" y1="16" x2="12.01" y2="16"/>
+            </svg>
+            <span class="font-semibold text-yellow-800">Circuito Especial</span>
+          </div>
+        </div>
+      )}
+
+      <!-- Descripción -->
+      <div class="mb-8">
+        <h2 class="text-xl font-semibold mb-4">Descripción</h2>
+        <p class="text-seashell-700 leading-relaxed">{casaData.description}</p>
+      </div>
+
+      <!-- Botón Me Interesa -->
+      <div class="mb-12">
+        <a href={`https://wa.me/535551234?text=Hola,%20estoy%20interesado%20en%20la%20casa%20${encodeURIComponent(casaData.title)}`} target="_blank" class="w-full flex items-center justify-center gap-3 bg-green-500 hover:bg-green-600 text-white px-8 py-4 rounded-xl font-semibold text-lg transition-colors shadow-lg">
+          <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 0C5.373 0 0 5.373 0 12c0 2.112.55 4.154 1.592 5.978L0 24l6.156-1.6C7.957 23.428 9.93 24 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.5c-1.98 0-3.9-.502-5.586-1.448l-.398-.237-4.146 1.075 1.103-4.022-.262-.42A9.44 9.44 0 0 1 2.5 12c0-5.247 4.253-9.5 9.5-9.5s9.5 4.253 9.5 9.5S17.247 21.5 12 21.5z"/>
+            <path d="M17.532 14.384c-.27-.807-1.566-1.536-2.157-1.653-.59-.117-1.018-.175-1.446.176-.429.352-1.654 1.617-2.026 1.945-.372.328-.743.364-1.373.117-.63-.247-1.333-.439-2.28-1.412-.947-.973-1.585-2.17-1.773-2.536-.188-.365-.02-.563.15-.739.152-.159.334-.414.502-.621.167-.207.222-.351.333-.585.111-.234.055-.438-.028-.614-.083-.176-.743-1.793-1.016-2.456-.272-.662-.547-.568-.743-.578l-.636-.011c-.21 0-.552.078-.843.371-.292.292-1.116 1.087-1.116 2.644 0 1.557 1.145 3.056 1.303 3.263.158.208 2.222 3.396 5.38 4.751.753.322 1.337.515 1.792.66.756.241 1.44.206 1.982.125.605-.09 1.565-.638 1.789-1.256.225-.618.225-1.147.156-1.256-.068-.109-.247-.176-.466-.293z"/>
+          </svg>
+          Me interesa por WhatsApp
+        </a>
+      </div>
+
+      <!-- Sección Recomendados -->
+      <div class="mb-12">
+        <h2 class="text-2xl font-bold mb-8">Recomendados</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {[
+            {
+              title: 'Casa de Campo Amplia',
+              location: 'San Juan, Bayamo',
+              price: '$620,000',
+              image: 'https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=600&h=400&fit=crop'
+            },
+            {
+              title: 'Apartamento de Lujo en el Centro',
+              location: 'El Cristo, Bayamo',
+              price: '$1,500,000',
+              image: 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=600&h=400&fit=crop'
+            },
+            {
+              title: 'Casa Familiar con Jardín',
+              location: 'Jesús Menéndez, Bayamo',
+              price: '$480,000',
+              image: 'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=600&h=400&fit=crop'
+            }
+          ].map((casa, index) => (
+            <div key={index} class="bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300">
+              <div class="relative h-40 overflow-hidden">
+                <img src={casa.image} alt={casa.title} class="w-full h-full object-cover hover:scale-105 transition-transform duration-300"/>
+              </div>
+              <div class="p-4">
+                <div class="text-xl font-bold text-seashell-900 mb-1">{casa.price}</div>
+                <h3 class="text-sm font-semibold text-seashell-800 mb-2">{casa.title}</h3>
+                <div class="flex items-center gap-1 text-seashell-600">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+                    <circle cx="12" cy="10" r="3"/>
+                  </svg>
+                  <span class="text-xs">{casa.location}</span>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <!-- Sección Anuncios -->
+      <div class="mb-12">
+        <h2 class="text-2xl font-bold mb-8">Anuncios</h2>
+        <div class="bg-gray-100 rounded-2xl h-64 flex items-center justify-center">
+          <div class="text-center text-seashell-600">
+            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mx-auto mb-4">
+              <rect width="18" height="18" x="3" y="3" rx="2"/>
+              <path d="M3 9h18"/>
+              <path d="M9 21V9"/>
+            </svg>
+            <p class="font-semibold">Espacio para anuncios</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <Footer/>
+  </div>
+
+  <script is:inline>
+    function changeImage(element) {
+      const mainImage = document.getElementById('mainImage');
+      mainImage.src = element.dataset.src;
+      
+      const thumbs = document.querySelectorAll('[data-index]');
+      thumbs.forEach(thumb => {
+        thumb.classList.remove('border-seashell-500');
+        thumb.classList.add('border-transparent');
+      });
+      
+      element.classList.remove('border-transparent');
+      element.classList.add('border-seashell-500');
+    }
+  </script>
+</Layout>

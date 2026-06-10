@@ -8,6 +8,7 @@
     <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
       {[
         {
+          id: "7",
           title: "Casa Acogedora con Jardín",
           location: "Camilo Cienfuegos",
           price: "$520,000",
@@ -17,6 +18,7 @@
           image: "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=800&h=600&fit=crop"
         },
         {
+          id: "8",
           title: "Apartamento Moderno en el Centro",
           location: "Nuevo Bayamo",
           price: "$380,000",
@@ -26,6 +28,7 @@
           image: "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800&h=600&fit=crop"
         },
         {
+          id: "9",
           title: "Villa con Piscina",
           location: "San Juan",
           price: "$980,000",
@@ -35,6 +38,7 @@
           image: "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&h=600&fit=crop"
         },
         {
+          id: "10",
           title: "Casa Familiar Espaciosa",
           location: "El Cristo",
           price: "$640,000",
@@ -44,7 +48,7 @@
           image: "https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=800&h=600&fit=crop"
         }
       ].map((casa) => (
-        <div class="bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300">
+        <a href={`/casa/${casa.id}`} class="block bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300 hover:scale-[1.02] transition-transform">
           <div class="relative h-56 overflow-hidden">
             <img src={casa.image} alt={casa.title} class="w-full h-full object-cover hover:scale-105 transition-transform duration-300" />
             <div class="absolute top-4 left-4 bg-seashell-900 text-white px-3 py-1 rounded-full text-sm font-semibold">
@@ -90,7 +94,7 @@
               </div>
             </div>
           </div>
-        </div>
+        </a>
       ))}
     </div>
   </div>

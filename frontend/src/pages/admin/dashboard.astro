@@ -1,0 +1,375 @@
+---
+import '../../styles/global.css';
+export const prerender = false;
+---
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="icon" href="/favicon.ico" />
+  <title>Dashboard - BayHouse Admin</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
+<body class="m-0 w-full h-full bg-seashell-50">
+  <!-- Navbar -->
+  <nav class="bg-white shadow-sm sticky top-0 z-50 border-b border-seashell-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-16">
+        <div class="flex items-center gap-4">
+          <h1 class="text-xl font-bold text-seashell-900">BayHouse Admin</h1>
+        </div>
+        <div class="flex items-center gap-4">
+          <span class="text-seashell-600">Bienvenido, david05</span>
+          <button id="logoutBtn" class="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg transition-colors">
+            Cerrar Sesión
+          </button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <!-- Header -->
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
+      <div>
+        <h2 class="text-2xl font-bold text-seashell-900">Gestión de Propiedades</h2>
+        <p class="text-seashell-600">Administra las casas publicadas en el portal</p>
+      </div>
+      <button id="newPropertyBtn" class="px-6 py-3 bg-seashell-900 hover:bg-seashell-800 text-white font-semibold rounded-lg transition-colors flex items-center gap-2">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+        </svg>
+        Nueva Venta
+      </button>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+      <div class="bg-white p-6 rounded-xl shadow-sm border border-seashell-200">
+        <div class="flex items-center gap-4">
+          <div class="p-3 bg-seashell-100 rounded-lg">
+            <svg class="w-6 h-6 text-seashell-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+            </svg>
+          </div>
+          <div>
+            <p class="text-sm text-seashell-600">Total Propiedades</p>
+            <p class="text-2xl font-bold text-seashell-900" id="totalProperties">6</p>
+          </div>
+        </div>
+      </div>
+      
+      <div class="bg-white p-6 rounded-xl shadow-sm border border-seashell-200">
+        <div class="flex items-center gap-4">
+          <div class="p-3 bg-green-100 rounded-lg">
+            <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+          </div>
+          <div>
+            <p class="text-sm text-seashell-600">En Venta</p>
+            <p class="text-2xl font-bold text-seashell-900" id="forSale">6</p>
+          </div>
+        </div>
+      </div>
+      
+      <div class="bg-white p-6 rounded-xl shadow-sm border border-seashell-200">
+        <div class="flex items-center gap-4">
+          <div class="p-3 bg-yellow-100 rounded-lg">
+            <svg class="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path>
+            </svg>
+          </div>
+          <div>
+            <p class="text-sm text-seashell-600">Circuito Especial</p>
+            <p class="text-2xl font-bold text-seashell-900" id="specialCircuit">6</p>
+          </div>
+        </div>
+      </div>
+      
+      <div class="bg-white p-6 rounded-xl shadow-sm border border-seashell-200">
+        <div class="flex items-center gap-4">
+          <div class="p-3 bg-purple-100 rounded-lg">
+            <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+          </div>
+          <div>
+            <p class="text-sm text-seashell-600">Visitas Hoy</p>
+            <p class="text-2xl font-bold text-seashell-900">147</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Properties List -->
+    <div class="bg-white rounded-xl shadow-sm overflow-hidden border border-seashell-200">
+      <div class="overflow-x-auto">
+        <table class="w-full">
+          <thead class="bg-seashell-50 border-b border-seashell-200">
+            <tr>
+              <th class="px-6 py-4 text-left text-xs font-semibold text-seashell-600 uppercase tracking-wider">Propiedad</th>
+              <th class="px-6 py-4 text-left text-xs font-semibold text-seashell-600 uppercase tracking-wider">Ubicación</th>
+              <th class="px-6 py-4 text-left text-xs font-semibold text-seashell-600 uppercase tracking-wider">Precio</th>
+              <th class="px-6 py-4 text-left text-xs font-semibold text-seashell-600 uppercase tracking-wider">Habitaciones</th>
+              <th class="px-6 py-4 text-left text-xs font-semibold text-seashell-600 uppercase tracking-wider">Estado</th>
+              <th class="px-6 py-4 text-left text-xs font-semibold text-seashell-600 uppercase tracking-wider">Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="propertiesTable" class="divide-y divide-seashell-200">
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Nueva Propiedad -->
+  <div id="newPropertyModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50 p-4">
+    <div class="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto border border-seashell-200">
+      <div class="p-6 border-b border-seashell-200 flex justify-between items-center sticky top-0 bg-white">
+        <h3 class="text-xl font-bold text-seashell-900">Nueva Venta</h3>
+        <button id="closeModalBtn" class="text-seashell-400 hover:text-seashell-600">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+          </svg>
+        </button>
+      </div>
+      
+      <form id="newPropertyForm" class="p-6 space-y-6">
+        <!-- Título y Precio -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-sm font-medium text-seashell-700 mb-2">Título *</label>
+            <input type="text" name="title" required class="w-full px-4 py-3 border border-seashell-300 rounded-lg focus:ring-2 focus:ring-seashell-500 outline-none bg-white">
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-seashell-700 mb-2">Precio *</label>
+            <input type="text" name="price" required placeholder="$0.00" class="w-full px-4 py-3 border border-seashell-300 rounded-lg focus:ring-2 focus:ring-seashell-500 outline-none bg-white">
+          </div>
+        </div>
+        
+        <!-- Ubicación -->
+        <div>
+          <label class="block text-sm font-medium text-seashell-700 mb-2">Ubicación *</label>
+          <input type="text" name="location" required class="w-full px-4 py-3 border border-seashell-300 rounded-lg focus:ring-2 focus:ring-seashell-500 outline-none bg-white">
+        </div>
+        
+        <!-- Imágenes -->
+        <div>
+          <label class="block text-sm font-medium text-seashell-700 mb-2">Imagen Principal (URL) *</label>
+          <input type="url" name="mainImage" required placeholder="https://..." class="w-full px-4 py-3 border border-seashell-300 rounded-lg focus:ring-2 focus:ring-seashell-500 outline-none bg-white mb-4">
+          
+          <label class="block text-sm font-medium text-seashell-700 mb-2">Otras Imágenes (máx 15, una por línea)</label>
+          <textarea name="otherImages" rows="4" placeholder="https://...&#10;https://..." class="w-full px-4 py-3 border border-seashell-300 rounded-lg focus:ring-2 focus:ring-seashell-500 outline-none bg-white"></textarea>
+        </div>
+        
+        <!-- Características Básicas -->
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div>
+            <label class="block text-sm font-medium text-seashell-700 mb-2">Habitaciones *</label>
+            <input type="number" name="bedrooms" required min="1" class="w-full px-4 py-3 border border-seashell-300 rounded-lg focus:ring-2 focus:ring-seashell-500 outline-none bg-white">
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-seashell-700 mb-2">Baños *</label>
+            <input type="number" name="bathrooms" required min="1" class="w-full px-4 py-3 border border-seashell-300 rounded-lg focus:ring-2 focus:ring-seashell-500 outline-none bg-white">
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-seashell-700 mb-2">Metros Cuadrados *</label>
+            <input type="number" name="squareMeters" required min="1" class="w-full px-4 py-3 border border-seashell-300 rounded-lg focus:ring-2 focus:ring-seashell-500 outline-none bg-white">
+          </div>
+        </div>
+        
+        <!-- Plantas -->
+        <div>
+          <label class="block text-sm font-medium text-seashell-700 mb-2">Número de Plantas *</label>
+          <input type="number" name="floors" required min="1" class="w-full px-4 py-3 border border-seashell-300 rounded-lg focus:ring-2 focus:ring-seashell-500 outline-none bg-white">
+        </div>
+        
+        <!-- Características Checkbox -->
+        <div>
+          <label class="block text-sm font-medium text-seashell-700 mb-4">Características</label>
+          <div class="grid grid-cols-2 sm:grid-cols-3 gap-4">
+            <label class="flex items-center gap-2 cursor-pointer">
+              <input type="checkbox" name="garage" class="w-4 h-4 text-seashell-600 rounded focus:ring-seashell-500">
+              <span class="text-sm text-seashell-700">Garage</span>
+            </label>
+            <label class="flex items-center gap-2 cursor-pointer">
+              <input type="checkbox" name="patio" class="w-4 h-4 text-seashell-600 rounded focus:ring-seashell-500">
+              <span class="text-sm text-seashell-700">Patio</span>
+            </label>
+            <label class="flex items-center gap-2 cursor-pointer">
+              <input type="checkbox" name="terrace" class="w-4 h-4 text-seashell-600 rounded focus:ring-seashell-500">
+              <span class="text-sm text-seashell-700">Terraza Libre</span>
+            </label>
+            <label class="flex items-center gap-2 cursor-pointer">
+              <input type="checkbox" name="cistern" class="w-4 h-4 text-seashell-600 rounded focus:ring-seashell-500">
+              <span class="text-sm text-seashell-700">Cisterna</span>
+            </label>
+            <label class="flex items-center gap-2 cursor-pointer">
+              <input type="checkbox" name="specialCircuit" class="w-4 h-4 text-seashell-600 rounded focus:ring-seashell-500">
+              <span class="text-sm text-seashell-700">Circuito Especial</span>
+            </label>
+          </div>
+        </div>
+        
+        <!-- Descripción -->
+        <div>
+          <label class="block text-sm font-medium text-seashell-700 mb-2">Descripción Breve *</label>
+          <textarea name="description" required rows="4" class="w-full px-4 py-3 border border-seashell-300 rounded-lg focus:ring-2 focus:ring-seashell-500 outline-none bg-white"></textarea>
+        </div>
+        
+        <!-- Botones -->
+        <div class="flex gap-4 pt-4">
+          <button type="button" id="cancelBtn" class="flex-1 px-6 py-3 bg-seashell-200 hover:bg-seashell-300 text-seashell-800 font-semibold rounded-lg transition-colors">
+            Cancelar
+          </button>
+          <button type="submit" class="flex-1 px-6 py-3 bg-seashell-900 hover:bg-seashell-800 text-white font-semibold rounded-lg transition-colors">
+            Crear Propiedad
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    let properties = [
+      { id: 1, title: 'Casa Moderna con Piscina', location: 'Camilo Cienfuegos, Bayamo', price: '$850,000', bedrooms: 4, bathrooms: 3, squareMeters: 2800, status: 'En Venta', specialCircuit: false, garage: true, patio: true, terrace: true, cistern: true, floors: 2, description: 'Hermosa casa moderna con piscina en el reparto Camilo Cienfuegos.' },
+      { id: 2, title: 'Villa de Lujo con Vista al Mar', location: 'Nuevo Bayamo', price: '$2,200,000', bedrooms: 5, bathrooms: 4, squareMeters: 4200, status: 'En Venta', specialCircuit: true, garage: true, patio: true, terrace: true, cistern: true, floors: 3, description: 'Villa de lujo con increíbles vistas al mar.' },
+      { id: 3, title: 'Casa de Campo Amplia', location: 'San Juan, Bayamo', price: '$620,000', bedrooms: 3, bathrooms: 2, squareMeters: 2100, status: 'En Venta', specialCircuit: false, garage: true, patio: true, terrace: false, cistern: true, floors: 1, description: 'Casa de campo perfecta para la familia.' },
+      { id: 4, title: 'Apartamento de Lujo en el Centro', location: 'El Cristo, Bayamo', price: '$1,500,000', bedrooms: 3, bathrooms: 2, squareMeters: 1800, status: 'En Venta', specialCircuit: true, garage: true, patio: false, terrace: true, cistern: false, floors: 1, description: 'Apartamento de lujo en el corazón de la ciudad.' },
+      { id: 5, title: 'Casa Familiar con Jardín', location: 'Jesús Menéndez, Bayamo', price: '$480,000', bedrooms: 4, bathrooms: 2, squareMeters: 2400, status: 'En Venta', specialCircuit: false, garage: false, patio: true, terrace: true, cistern: true, floors: 2, description: 'Casa familiar con amplio jardín.' },
+      { id: 6, title: 'Residencia Contemporánea', location: 'Las Caobas, Bayamo', price: '$1,850,000', bedrooms: 5, bathrooms: 4, squareMeters: 3500, status: 'En Venta', specialCircuit: true, garage: true, patio: true, terrace: true, cistern: true, floors: 3, description: 'Residencia contemporánea con acabados premium.' }
+    ];
+
+    const savedProperties = localStorage.getItem('bayhouseProperties');
+    if (savedProperties) {
+      properties = JSON.parse(savedProperties);
+    }
+
+    if (localStorage.getItem('adminAuth') !== 'true') {
+      window.location.href = '/admin';
+    }
+
+    function renderPropertiesTable() {
+      const tableBody = document.getElementById('propertiesTable');
+      tableBody.innerHTML = properties.map(prop => `
+        <tr class="hover:bg-seashell-50">
+          <td class="px-6 py-4">
+            <div class="flex items-center gap-3">
+              <div class="w-16 h-16 bg-seashell-100 rounded-lg overflow-hidden">
+                <img src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=100&h=100&fit=crop" alt="" class="w-full h-full object-cover">
+              </div>
+              <div>
+                <p class="font-semibold text-seashell-900">${prop.title}</p>
+                <p class="text-sm text-seashell-500">ID: ${prop.id}</p>
+              </div>
+            </div>
+          </td>
+          <td class="px-6 py-4 text-seashell-600">${prop.location}</td>
+          <td class="px-6 py-4 font-semibold text-seashell-900">${prop.price}</td>
+          <td class="px-6 py-4 text-seashell-600">${prop.bedrooms} hab / ${prop.bathrooms} baños</td>
+          <td class="px-6 py-4">
+            <span class="px-3 py-1 ${prop.specialCircuit ? 'bg-yellow-100 text-yellow-800' : 'bg-green-100 text-green-800'} rounded-full text-xs font-medium">
+              ${prop.specialCircuit ? 'Especial' : 'En Venta'}
+            </span>
+          </td>
+          <td class="px-6 py-4">
+            <div class="flex gap-2">
+              <button onclick="editProperty(${prop.id})" class="p-2 text-seashell-600 hover:bg-seashell-100 rounded-lg transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                </svg>
+              </button>
+              <button onclick="deleteProperty(${prop.id})" class="p-2 text-red-600 hover:bg-red-100 rounded-lg transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                </svg>
+              </button>
+            </div>
+          </td>
+        </tr>
+      `).join('');
+      
+      document.getElementById('totalProperties').textContent = properties.length;
+      document.getElementById('forSale').textContent = properties.filter(p => !p.specialCircuit).length;
+      document.getElementById('specialCircuit').textContent = properties.filter(p => p.specialCircuit).length;
+    }
+
+    document.getElementById('logoutBtn').addEventListener('click', () => {
+      localStorage.removeItem('adminAuth');
+      window.location.href = '/admin';
+    });
+
+    const modal = document.getElementById('newPropertyModal');
+    const newPropertyBtn = document.getElementById('newPropertyBtn');
+    const closeModalBtn = document.getElementById('closeModalBtn');
+    const cancelBtn = document.getElementById('cancelBtn');
+    const newPropertyForm = document.getElementById('newPropertyForm');
+
+    newPropertyBtn.addEventListener('click', () => {
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    });
+
+    const closeModal = () => {
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+      newPropertyForm.reset();
+    };
+
+    closeModalBtn.addEventListener('click', closeModal);
+    cancelBtn.addEventListener('click', closeModal);
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) closeModal();
+    });
+
+    newPropertyForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      
+      const formData = new FormData(newPropertyForm);
+      const newProperty = {
+        id: properties.length > 0 ? Math.max(...properties.map(p => p.id)) + 1 : 1,
+        title: formData.get('title'),
+        price: formData.get('price'),
+        location: formData.get('location'),
+        bedrooms: parseInt(formData.get('bedrooms')),
+        bathrooms: parseInt(formData.get('bathrooms')),
+        squareMeters: parseInt(formData.get('squareMeters')),
+        floors: parseInt(formData.get('floors')),
+        garage: formData.get('garage') === 'on',
+        patio: formData.get('patio') === 'on',
+        terrace: formData.get('terrace') === 'on',
+        cistern: formData.get('cistern') === 'on',
+        specialCircuit: formData.get('specialCircuit') === 'on',
+        description: formData.get('description'),
+        status: 'En Venta',
+        mainImage: formData.get('mainImage'),
+        otherImages: formData.get('otherImages') ? formData.get('otherImages').split('\n').filter(url => url.trim()) : []
+      };
+      
+      properties.push(newProperty);
+      localStorage.setItem('bayhouseProperties', JSON.stringify(properties));
+      
+      closeModal();
+      renderPropertiesTable();
+    });
+
+    window.deleteProperty = (id) => {
+      if (confirm('¿Estás seguro de eliminar esta propiedad?')) {
+        properties = properties.filter(p => p.id !== id);
+        localStorage.setItem('bayhouseProperties', JSON.stringify(properties));
+        renderPropertiesTable();
+      }
+    };
+
+    window.editProperty = (id) => {
+      alert(`Editar propiedad ID: ${id} - Esta funcionalidad se puede extender`);
+    };
+
+    renderPropertiesTable();
+  </script>
+</body>
+</html>
