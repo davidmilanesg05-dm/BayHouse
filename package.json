@@ -1,4 +1,11 @@
 {
+  "name": "bayhouse",
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "cd frontend && npm run dev",
+    "build": "cd frontend && npm run build",
+    "preview": "cd frontend && npm run preview"
+  },
   "dependencies": {
     "number-flow": "^0.6.0"
   }
