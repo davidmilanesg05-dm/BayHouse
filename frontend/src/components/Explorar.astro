@@ -1,11 +1,11 @@
 ---
 ---
 
-<section class="py-20 px-4 bg-seashell-50">
+<section id="explorar-section" class="py-20 px-4 bg-background">
   <div class="max-w-4xl mx-auto">
-    <h2 class="text-3xl font-bold text-seashell-900 mb-10 text-center">Explorar Repartos</h2>
+    <h2 id="explorar-title" class="text-3xl font-bold text-foreground mb-10 text-center">Explorar Repartos</h2>
     
-    <div class="grid grid-cols-2 gap-4">
+    <div id="explorar-grid" class="grid grid-cols-2 gap-4">
       {[
         "Camilo Cienfuegos",
         "Nuevo Bayamo",
@@ -20,17 +20,74 @@
       ].map((reparto, index) => (
         <div 
           key={index}
-          class="bg-white p-4 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300 border border-seashell-100 flex items-center gap-4 cursor-pointer hover:border-seashell-300"
+          class="reparto-card bg-card p-4 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300 border border-border flex items-center gap-4 cursor-pointer hover:border-border"
         >
-          <div class="flex-shrink-0 w-12 h-12 bg-seashell-100 rounded-full flex items-center justify-center">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-seashell-700">
-              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0Z"></path>
-              <circle cx="12" cy="10" r="3"></circle>
-            </svg>
+          <div class="flex-shrink-0 w-12 h-12 bg-muted rounded-full flex items-center justify-center">
+            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" data-icon="SvgMapPin" aria-hidden="true"><path d="M17.116 13.391h0L12 21l-5.258-7.8q-.1-.135-.186-.276l-.027-.04h0a6.459 6.459 0 1110.585.505zM12 7.175a2.3 2.3 0 102.3 2.3 2.3 2.3 0 00-2.3-2.3z"></path></svg>
           </div>
-          <span class="text-base font-semibold text-seashell-800">{reparto}</span>
+          <span class="text-base font-semibold text-foreground">{reparto}</span>
         </div>
       ))}
     </div>
   </div>
 </section>
+
+<script>
+  import { gsap } from 'gsap';
+  import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const title = document.getElementById('explorar-title');
+    const cards = document.querySelectorAll('.reparto-card');
+
+    // Animate title
+    if (title) {
+      gsap.fromTo(
+        title,
+        { opacity: 0, y: 30 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.6,
+          ease: 'power2.out',
+          scrollTrigger: {
+            trigger: '#explorar-section',
+            start: 'top 80%'
+          }
+        }
+      );
+    }
+
+    // Animate cards
+    if (cards.length) {
+      gsap.fromTo(
+        cards,
+        { opacity: 0, y: 40, scale: 0.9 },
+        {
+          opacity: 1,
+          y: 0,
+          scale: 1,
+          duration: 0.5,
+          stagger: 0.08,
+          ease: 'power2.out',
+          scrollTrigger: {
+            trigger: '#explorar-section',
+            start: 'top 75%'
+          }
+        }
+      );
+
+      // Add hover effects
+      cards.forEach((card) => {
+        card.addEventListener('mouseenter', () => {
+          gsap.to(card, { y: -6, scale: 1.02, duration: 0.2, ease: 'power2.out' });
+        });
+        card.addEventListener('mouseleave', () => {
+          gsap.to(card, { y: 0, scale: 1, duration: 0.2, ease: 'power2.out' });
+        });
+      });
+    }
+  });
+</script>

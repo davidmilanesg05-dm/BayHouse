@@ -1,0 +1,132 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout>
+  <main class="bg-background text-foreground min-h-screen">
+    <!-- Back Button -->
+    <section class="pt-8 px-4">
+      <div class="max-w-7xl mx-auto">
+        <a href="/" class="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors mb-8">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="m15 18-6-6 6-6"></path>
+          </svg>
+          <span class="font-semibold">Volver</span>
+        </a>
+      </div>
+    </section>
+
+    <!-- Hero Section -->
+    <section class="pb-16 px-4">
+      <div class="max-w-7xl mx-auto text-center">
+        <h1 class="text-5xl md:text-6xl font-bold mb-6">Políticas de <span class="text-primary">Privacidad</span></h1>
+        <p class="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto">Tu privacidad es importante para nosotros. Aquí te explicamos cómo manejamos tus datos.</p>
+      </div>
+    </section>
+
+    <!-- Content -->
+    <section class="py-16 px-4">
+      <div class="max-w-4xl mx-auto space-y-8">
+        <div class="bg-card p-8 mb-4 rounded-2xl shadow-lg border border-border">
+          <h2 class="text-2xl font-bold mb-4">1. Información que recopilamos</h2>
+          <p class="text-muted-foreground mb-4">
+            Recopilamos información que nos proporcionas directamente, como tu nombre, correo electrónico, número de teléfono y cualquier otra información que decidas compartir con nosotros.
+          </p>
+        </div>
+
+        <div class="bg-card p-8 mb-4 rounded-2xl shadow-lg border border-border">
+          <h2 class="text-2xl font-bold mb-4">2. Uso de la información</h2>
+          <p class="text-muted-foreground mb-4">
+            Utilizamos tu información para:
+          </p>
+          <ul class="list-disc list-inside text-muted-foreground space-y-2">
+            <li>Contactarte sobre propiedades que puedan interesarte</li>
+            <li>Procesar tus solicitudes de información</li>
+            <li>Mejorar nuestros servicios</li>
+            <li>Enviarte comunicaciones relevantes (si has dado tu consentimiento)</li>
+          </ul>
+        </div>
+
+        <div class="bg-card p-8 mb-4 rounded-2xl shadow-lg border border-border">
+          <h2 class="text-2xl font-bold mb-4">3. Compartir información</h2>
+          <p class="text-muted-foreground">
+            No vendemos, alquilamos ni compartimos tu información personal con terceros, excepto cuando es necesario para proporcionar nuestros servicios o cuando lo requiera la ley.
+          </p>
+        </div>
+
+        <div class="bg-card p-8 mb-4 rounded-2xl shadow-lg border border-border">
+          <h2 class="text-2xl font-bold mb-4">4. Seguridad de datos</h2>
+          <p class="text-muted-foreground">
+            Implementamos medidas de seguridad para proteger tu información personal contra acceso no autorizado, alteración o destrucción.
+          </p>
+        </div>
+
+        <div class="bg-card p-8 mb-4 rounded-2xl shadow-lg border border-border">
+          <h2 class="text-2xl font-bold mb-4">5. Tus derechos</h2>
+          <p class="text-muted-foreground mb-4">
+            Tienes derecho a:
+          </p>
+          <ul class="list-disc list-inside text-muted-foreground space-y-2">
+            <li>Acceder a tu información personal</li>
+            <li>Rectificar datos incorrectos</li>
+            <li>Solicitar la eliminación de tus datos</li>
+            <li>Oponerte al procesamiento de tus datos</li>
+          </ul>
+        </div>
+
+        <div class="bg-card p-8 mb-4 rounded-2xl shadow-lg border border-border">
+          <h2 class="text-2xl font-bold mb-4">6. Cookies</h2>
+          <p class="text-muted-foreground">
+            Utilizamos cookies para mejorar tu experiencia en nuestro sitio web. Puedes configurar tu navegador para rechazar todas las cookies o para que te avise cuando se envíen.
+          </p>
+        </div>
+
+        <div class="bg-card p-8 mb-4 rounded-2xl shadow-lg border border-border">
+          <h2 class="text-2xl font-bold mb-4">7. Contacto</h2>
+          <p class="text-muted-foreground">
+            Si tienes preguntas sobre estas políticas de privacidad, puedes contactarnos a través de nuestra página de contacto.
+          </p>
+        </div>
+      </div>
+    </section>
+  </main>
+</Layout>
+
+<script>
+  import { gsap } from "gsap";
+  import { ScrollTrigger } from "gsap/ScrollTrigger";
+  
+  gsap.registerPlugin(ScrollTrigger);
+  
+  document.addEventListener('DOMContentLoaded', () => {
+    // Hero section
+    const heroTitle = document.querySelector('h1');
+    const heroSubtitle = document.querySelector('h1 + p');
+    
+    if (heroTitle) {
+      gsap.fromTo(heroTitle, { opacity: 0, y: 50 }, { opacity: 1, y: 0, duration: 1, ease: 'power3.out' });
+    }
+    if (heroSubtitle) {
+      gsap.fromTo(heroSubtitle, { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.8, delay: 0.3, ease: 'power2.out' });
+    }
+    
+    // Policy cards
+    const policyCards = document.querySelectorAll('.bg-card');
+    if (policyCards.length > 0) {
+      gsap.fromTo(policyCards, 
+        { opacity: 0, y: 40 }, 
+        { 
+          opacity: 1, 
+          y: 0, 
+          duration: 0.6, 
+          stagger: 0.1, 
+          ease: 'power2.out',
+          scrollTrigger: {
+            trigger: policyCards[0].parentElement,
+            start: 'top 80%'
+          }
+        }
+      );
+    }
+  });
+</script>

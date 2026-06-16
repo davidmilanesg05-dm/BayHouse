@@ -1,290 +1,262 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import Footer from '../../components/Footer.astro';
+import { supabase, type Property } from '../../lib/supabase';
 
 export const prerender = false;
 
-const casaData = {
-  id: '1',
-  title: 'Casa Moderna con Piscina',
-  location: 'Camilo Cienfuegos, Bayamo',
-  price: '$850,000',
-  beds: 4,
-  baths: 3,
-  sqft: 2800,
-  garage: true,
-  patio: true,
-  placaLibre: true,
-  tanques: true,
-  cisternas: true,
-  circuitoEspecial: false,
-  description: 'Hermosa casa moderna con piscina en el reparto Camilo Cienfuegos. Cuenta con amplios espacios, terminaciones de primera calidad y ubicación privilegiada.',
-  images: [
-    'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1200&h=800&fit=crop',
-    'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&h=800&fit=crop',
-    'https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=1200&h=800&fit=crop',
-    'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=1200&h=800&fit=crop'
-  ]
-};
+// Obtener ID y propiedad
+const { id } = Astro.params;
+
+const { data: casaData, error } = await supabase
+  .from('properties')
+  .select('*')
+  .eq('id', id)
+  .single();
 ---
 
 <Layout>
-  <div class="bg-white min-h-screen">
+  <div class="bg-background min-h-screen">
     <!-- Navbar -->
-    <nav class="bg-white border-b border-gray-200 sticky top-0 z-10">
+    <nav class="bg-background border-b border-border sticky top-0 z-10">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between items-center h-16">
-          <button class="p-2 rounded-full hover:bg-gray-100 transition-colors" onclick="history.back()">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="m9 18 6-6-6-6"/>
-            </svg>
-          </button>
+          <a href="/" class="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="m15 18-6-6 6-6"></path>
+          </svg>
+          <span class="font-semibold">Volver</span>
+        </a>
           
           <div class="flex gap-2">
-            <button class="p-2 rounded-full hover:bg-gray-100 transition-colors">
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/>
-                <polyline points="16 6 12 2 8 6"/>
-                <line x1="12" y1="2" x2="12" y2="15"/>
-              </svg>
+            <button class="p-2 rounded-full hover:bg-muted transition-colors">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" data-icon="SvgShare2" aria-hidden="true"><path d="M21 5.841a2.8 2.8 0 11-2.8-2.8 2.8 2.8 0 012.8 2.8zM18.2 15.4a2.8 2.8 0 102.8 2.8 2.8 2.8 0 00-2.8-2.8zM5.8 9.22a2.8 2.8 0 102.8 2.8 2.8 2.8 0 00-2.8-2.8zm9.6-2.2l-6.8 3.551m7 6.6l-7-3.8"></path></svg>
             </button>
-            <button class="p-2 rounded-full hover:bg-gray-100 transition-colors">
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
-              </svg>
+            <button id="favoriteBtn" class="p-2 rounded-full hover:bg-muted transition-colors" data-property-id={casaData ? String(casaData.id) : undefined}>
+              <svg id="heartIcon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" data-icon="SvgHeart" aria-hidden="true"><path d="M19.616 5.673a4.738 4.738 0 00-6.7 0L12 6.586l-.913-.913a4.739 4.739 0 00-6.7 6.7l.913.913 6.7 6.7 6.7-6.7.913-.913a4.738 4.738 0 000-6.7z"></path></svg>
             </button>
           </div>
         </div>
       </div>
     </nav>
 
-    <!-- Slider de Imágenes -->
-    <div class="relative">
-      <div class="aspect-video bg-gray-100">
-        <img id="mainImage" src={casaData.images[0]} alt={casaData.title} class="w-full h-full object-cover"/>
-      </div>
-      
-      <!-- Thumbnails -->
-      <div class="flex gap-2 p-4 overflow-x-auto">
-        {casaData.images.map((img, index) => (
-          <button 
-            key={index}
-            class="flex-shrink-0 w-20 h-16 rounded-lg overflow-hidden border-2 transition-all"
-            class:border-seashell-500={index === 0}
-            class:border-transparent={index !== 0}
-            data-index={index}
-            data-src={img}
-            onclick="changeImage(this)"
-          >
-            <img src={img} alt={`Imagen ${index + 1}`} class="w-full h-full object-cover"/>
-          </button>
-        ))}
-      </div>
-    </div>
-
-    <!-- Contenido Principal -->
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <!-- Precio y Título -->
-      <div class="mb-8">
-        <div class="text-3xl font-bold text-seashell-900 mb-2">{casaData.price}</div>
-        <h1 class="text-2xl font-semibold text-seashell-800 mb-2">{casaData.title}</h1>
-        <div class="flex items-center gap-2 text-seashell-600">
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
-            <circle cx="12" cy="10" r="3"/>
-          </svg>
-          <span>{casaData.location}</span>
-        </div>
-      </div>
-
-      <!-- Características -->
-      <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-8">
-        <div class="text-center p-4 bg-gray-50 rounded-xl">
-          <div class="flex justify-center mb-2">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-seashell-600">
-              <path d="M2 4v16"/>
-              <path d="M6 8V4"/>
-              <path d="M10 12V4"/>
-              <path d="M14 16V4"/>
-              <path d="M18 20V4"/>
-              <path d="M22 8V4"/>
-            </svg>
+    {casaData ? (
+      <>
+        <!-- Slider de Imágenes -->
+        <div class="relative">
+          <div class="aspect-video bg-muted">
+            <img id="mainImage" src={casaData.main_image_url} alt={casaData.title} class="w-full h-full object-cover">
           </div>
-          <div class="font-semibold">{casaData.beds}</div>
-          <div class="text-sm text-seashell-600">Habitaciones</div>
-        </div>
-
-        <div class="text-center p-4 bg-gray-50 rounded-xl">
-          <div class="flex justify-center mb-2">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-seashell-600">
-              <path d="M12 2v20"/>
-              <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
-            </svg>
+          
+          <!-- Thumbnails -->
+          <div class="flex gap-2 p-4 overflow-x-auto">
+            <button 
+              class="flex-shrink-0 w-20 h-16 rounded-lg overflow-hidden border-2 transition-all border-primary"
+              data-index="0"
+              data-src={casaData.main_image_url}
+              onclick="changeImage(this)"
+            >
+              <img src={casaData.main_image_url} alt="Imagen 1" class="w-full h-full object-cover">
+            </button>
+            {casaData.other_image_urls?.map((img, i) => (
+              <button 
+                key={i} 
+                class="flex-shrink-0 w-20 h-16 rounded-lg overflow-hidden border-2 transition-all border-transparent hover:border-border"
+                data-index={i+1}
+                data-src={img}
+                onclick="changeImage(this)"
+              >
+                <img src={img} alt={`Imagen ${i+2}`} class="w-full h-full object-cover">
+              </button>
+            )) || []}
           </div>
-          <div class="font-semibold">{casaData.baths}</div>
-          <div class="text-sm text-seashell-600">Baños</div>
         </div>
 
-        <div class="text-center p-4 bg-gray-50 rounded-xl">
-          <div class="flex justify-center mb-2">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-seashell-600">
-              <rect width="18" height="18" x="3" y="3" rx="2"/>
-              <path d="M3 9h18"/>
-              <path d="M9 21V9"/>
-            </svg>
-          </div>
-          <div class="font-semibold">{casaData.sqft}</div>
-          <div class="text-sm text-seashell-600">m²</div>
-        </div>
-
-        {casaData.garage && (
-          <div class="text-center p-4 bg-gray-50 rounded-xl">
-            <div class="flex justify-center mb-2">
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-seashell-600">
-                <path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A2 2 0 0 0 2 12v2a2 2 0 0 0 2 2h2"/>
-                <path d="M6 17H4a2 2 0 0 1-2-2v-2a2 2 0 0 1 2-2h2v6Zm8-6h1a2 2 0 0 1 2 2v6h-3v-8Z"/>
-              </svg>
+        <!-- Contenido Principal -->
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <!-- Precio y Título -->
+          <div class="mb-8">
+            <div class="text-3xl font-bold text-foreground mb-2">{casaData.price}</div>
+            <h1 class="text-2xl font-semibold text-foreground mb-2">{casaData.title}</h1>
+            <div class="flex items-center gap-2 text-muted-foreground">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" data-icon="SvgMapPin" aria-hidden="true"><path d="M17.116 13.391h0L12 21l-5.258-7.8q-.1-.135-.186-.276l-.027-.04h0a6.459 6.459 0 1110.585.505zM12 7.175a2.3 2.3 0 102.3 2.3 2.3 2.3 0 00-2.3-2.3z"></path></svg>
+              <span>{casaData.location}</span>
             </div>
-            <div class="font-semibold text-green-600">✓</div>
-            <div class="text-sm text-seashell-600">Garage</div>
           </div>
-        )}
 
-        {casaData.patio && (
-          <div class="text-center p-4 bg-gray-50 rounded-xl">
-            <div class="flex justify-center mb-2">
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-seashell-600">
-                <ellipse cx="12" cy="5" rx="9" ry="3"/>
-                <path d="M21 10c0 7-4 11-9 11s-9-4-9-11"/>
-                <ellipse cx="12" cy="5" rx="9" ry="3"/>
-              </svg>
-            </div>
-            <div class="font-semibold text-green-600">✓</div>
-            <div class="text-sm text-seashell-600">Patio</div>
-          </div>
-        )}
-
-        {casaData.placaLibre && (
-          <div class="text-center p-4 bg-gray-50 rounded-xl">
-            <div class="flex justify-center mb-2">
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-seashell-600">
-                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
-                <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
-              </svg>
-            </div>
-            <div class="font-semibold text-green-600">✓</div>
-            <div class="text-sm text-seashell-600">Placa Libre</div>
-          </div>
-        )}
-      </div>
-
-      {casaData.circuitoEspecial && (
-        <div class="mb-8 p-4 bg-yellow-50 border border-yellow-200 rounded-xl">
-          <div class="flex items-center gap-2">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-yellow-600">
-              <circle cx="12" cy="12" r="10"/>
-              <line x1="12" y1="8" x2="12" y2="12"/>
-              <line x1="12" y1="16" x2="12.01" y2="16"/>
-            </svg>
-            <span class="font-semibold text-yellow-800">Circuito Especial</span>
-          </div>
-        </div>
-      )}
-
-      <!-- Descripción -->
-      <div class="mb-8">
-        <h2 class="text-xl font-semibold mb-4">Descripción</h2>
-        <p class="text-seashell-700 leading-relaxed">{casaData.description}</p>
-      </div>
-
-      <!-- Botón Me Interesa -->
-      <div class="mb-12">
-        <a href={`https://wa.me/535551234?text=Hola,%20estoy%20interesado%20en%20la%20casa%20${encodeURIComponent(casaData.title)}`} target="_blank" class="w-full flex items-center justify-center gap-3 bg-green-500 hover:bg-green-600 text-white px-8 py-4 rounded-xl font-semibold text-lg transition-colors shadow-lg">
-          <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M12 0C5.373 0 0 5.373 0 12c0 2.112.55 4.154 1.592 5.978L0 24l6.156-1.6C7.957 23.428 9.93 24 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.5c-1.98 0-3.9-.502-5.586-1.448l-.398-.237-4.146 1.075 1.103-4.022-.262-.42A9.44 9.44 0 0 1 2.5 12c0-5.247 4.253-9.5 9.5-9.5s9.5 4.253 9.5 9.5S17.247 21.5 12 21.5z"/>
-            <path d="M17.532 14.384c-.27-.807-1.566-1.536-2.157-1.653-.59-.117-1.018-.175-1.446.176-.429.352-1.654 1.617-2.026 1.945-.372.328-.743.364-1.373.117-.63-.247-1.333-.439-2.28-1.412-.947-.973-1.585-2.17-1.773-2.536-.188-.365-.02-.563.15-.739.152-.159.334-.414.502-.621.167-.207.222-.351.333-.585.111-.234.055-.438-.028-.614-.083-.176-.743-1.793-1.016-2.456-.272-.662-.547-.568-.743-.578l-.636-.011c-.21 0-.552.078-.843.371-.292.292-1.116 1.087-1.116 2.644 0 1.557 1.145 3.056 1.303 3.263.158.208 2.222 3.396 5.38 4.751.753.322 1.337.515 1.792.66.756.241 1.44.206 1.982.125.605-.09 1.565-.638 1.789-1.256.225-.618.225-1.147.156-1.256-.068-.109-.247-.176-.466-.293z"/>
-          </svg>
-          Me interesa por WhatsApp
-        </a>
-      </div>
-
-      <!-- Sección Recomendados -->
-      <div class="mb-12">
-        <h2 class="text-2xl font-bold mb-8">Recomendados</h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {[
-            {
-              title: 'Casa de Campo Amplia',
-              location: 'San Juan, Bayamo',
-              price: '$620,000',
-              image: 'https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=600&h=400&fit=crop'
-            },
-            {
-              title: 'Apartamento de Lujo en el Centro',
-              location: 'El Cristo, Bayamo',
-              price: '$1,500,000',
-              image: 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=600&h=400&fit=crop'
-            },
-            {
-              title: 'Casa Familiar con Jardín',
-              location: 'Jesús Menéndez, Bayamo',
-              price: '$480,000',
-              image: 'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=600&h=400&fit=crop'
-            }
-          ].map((casa, index) => (
-            <div key={index} class="bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300">
-              <div class="relative h-40 overflow-hidden">
-                <img src={casa.image} alt={casa.title} class="w-full h-full object-cover hover:scale-105 transition-transform duration-300"/>
+          <!-- Características -->
+          <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-8">
+            <div class="text-center p-4 bg-card border border-border rounded-xl">
+              <div class="flex justify-center mb-2">
+                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor"><path d="M80-200v-240q0-27 11-49t29-39v-112q0-50 35-85t85-35h160q23 0 43 8.5t37 23.5q17-15 37-23.5t43-8.5h160q50 0 85 35t35 85v112q18 17 29 39t11 49v240h-80v-80H160v80H80Zm440-360h240v-80q0-17-11.5-28.5T720-680H560q-17 0-28.5 11.5T520-640v80Zm-320 0h240v-80q0-17-11.5-28.5T400-680H240q-17 0-28.5 11.5T200-640v80Zm-40 200h640v-80q0-17-11.5-28.5T760-480H200q-17 0-28.5 11.5T160-440v80Zm640 0H160h640Z"/></svg>
               </div>
-              <div class="p-4">
-                <div class="text-xl font-bold text-seashell-900 mb-1">{casa.price}</div>
-                <h3 class="text-sm font-semibold text-seashell-800 mb-2">{casa.title}</h3>
-                <div class="flex items-center gap-1 text-seashell-600">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
-                    <circle cx="12" cy="10" r="3"/>
-                  </svg>
-                  <span class="text-xs">{casa.location}</span>
+              <div class="font-semibold text-foreground">{casaData.beds}</div>
+              <div class="text-sm text-muted-foreground">Habitaciones</div>
+            </div>
+
+            <div class="text-center p-4 bg-card border border-border rounded-xl">
+              <div class="flex justify-center mb-2">
+               <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor"><path d="M223.5-623.5Q200-647 200-680t23.5-56.5Q247-760 280-760t56.5 23.5Q360-713 360-680t-23.5 56.5Q313-600 280-600t-56.5-23.5ZM200-80q-17 0-28.5-11.5T160-120q-33 0-56.5-23.5T80-200v-240h120v-30q0-38 26-64t64-26q20 0 37 8t31 22l56 62q8 8 15.5 15t16.5 13h274v-326q0-14-10-24t-24-10q-6 0-11.5 2.5T664-790l-50 50q5 17 2 33.5T604-676L494-788q14-9 30-11.5t32 3.5l50-50q16-16 36.5-25t43.5-9q48 0 81 33t33 81v326h80v240q0 33-23.5 56.5T800-120q0 17-11.5 28.5T760-80H200Zm-40-120h640v-160H160v160Zm0 0h640-640Z"/></svg>
+              </div>
+              <div class="font-semibold text-foreground">{casaData.baths}</div>
+              <div class="text-sm text-muted-foreground">Baños</div>
+            </div>
+
+            <div class="text-center p-4 bg-card border border-border rounded-xl">
+              <div class="flex justify-center mb-2">
+                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor"><path d="M208-120q-37 0-62.5-25.5T120-208v-548q0-29 27-40.5t47 8.5l90 90-54 54 28 28 54-54 104 104-54 54 28 28 54-54 104 104-54 54 28 28 54-54 104 104-54 54 28 28 54-54 80 80q20 20 8.5 47T756-120H208Zm32-120h332L240-572v332Z"/></svg>
+              </div>
+              <div class="font-semibold text-foreground">{casaData.sqft}</div>
+              <div class="text-sm text-muted-foreground">m²</div>
+            </div>
+
+            {casaData.garage && (
+              <div class="text-center p-4 bg-card border border-border rounded-xl">
+                <div class="flex justify-center mb-2">
+                  <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor"><path d="M160-80q-33 0-56.5-23.5T80-160v-640q0-33 23.5-56.5T160-880h640q33 0 56.5 23.5T880-800v640q0 33-23.5 56.5T800-80H160Zm0-80h640v-640H160v640Zm171.5-251.5Q320-423 320-440t11.5-28.5Q343-480 360-480t28.5 11.5Q400-457 400-440t-11.5 28.5Q377-400 360-400t-28.5-11.5Zm240 0Q560-423 560-440t11.5-28.5Q583-480 600-480t28.5 11.5Q640-457 640-440t-11.5 28.5Q617-400 600-400t-28.5-11.5ZM200-516v264q0 14 9 23t23 9h16q14 0 23-9t9-23v-48h400v48q0 14 9 23t23 9h16q14 0 23-9t9-23v-264l-66-192q-5-14-16.5-23t-25.5-9H308q-14 0-25.5 9T266-708l-66 192Zm106-64 28-80h292l28 80H306ZM160-800v640-640Zm120 420v-120h400v120H280Z"/></svg>
                 </div>
+                <div class="text-sm text-muted-foreground">Garage</div>
+              </div>
+            )}
+
+            {casaData.patio && (
+              <div class="text-center p-4 bg-card border border-border rounded-xl">
+                <div class="flex justify-center mb-2">
+                  <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor"><path d="M200-80v-80h240v-160h-80q-83 0-141.5-58.5T160-520q0-60 33-110.5t89-73.5q9-75 65.5-125.5T480-880q76 0 132.5 50.5T678-704q56 23 89 73.5T800-520q0 83-58.5 141.5T600-320h-80v160h240v80H200Zm160-320h240q50 0 85-35t35-85q0-36-20.5-66T646-630l-42-18-6-46q-6-45-39.5-75.5T480-800q-45 0-78.5 30.5T362-694l-6 46-42 18q-33 14-53.5 44T240-520q0 50 35 85t85 35Zm120-200Z"/></svg>
+                </div>
+                <div class="text-sm text-muted-foreground">Patio</div>
+              </div>
+            )}
+
+            {casaData.cistern && (
+              <div class="text-center p-4 bg-card border border-border rounded-xl">
+                <div class="flex justify-center mb-2">
+                  <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor"><path d="M280-240h400v-347L480-740 280-587v347Zm-80 80v-366L88-440l-47-63 439-337 440 336-48 64-112-86v366H200Zm336.5-183.5Q560-367 560-400q0-27-15-57.5T480-560q-50 72-65 102.5T400-400q0 33 23.5 56.5T480-320q33 0 56.5-23.5ZM480-400Z"/></svg>
+                </div>
+                <div class="text-sm text-muted-foreground">Cisterna</div>
+              </div>
+            )}
+          </div>
+
+          {casaData.special_circuit && (
+            <div class="mb-8 p-4 bg-yellow-950/30 border border-yellow-600 rounded-xl">
+              <div class="flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#fff085"><path d="M460-200h40v-74l140-140v-186H320v186l140 140v74Zm-80 80v-120L240-380v-220q0-33 23.5-56.5T320-680h40l-40 40v-200h80v160h160v-160h80v200l-40-40h40q33 0 56.5 23.5T720-600v220L580-240v120H380Zm100-280Z"/></svg>
+                <span class="font-semibold text-yellow-200">Circuito Especial</span>
               </div>
             </div>
-          ))}
-        </div>
-      </div>
+          )}
 
-      <!-- Sección Anuncios -->
-      <div class="mb-12">
-        <h2 class="text-2xl font-bold mb-8">Anuncios</h2>
-        <div class="bg-gray-100 rounded-2xl h-64 flex items-center justify-center">
-          <div class="text-center text-seashell-600">
-            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mx-auto mb-4">
-              <rect width="18" height="18" x="3" y="3" rx="2"/>
-              <path d="M3 9h18"/>
-              <path d="M9 21V9"/>
-            </svg>
-            <p class="font-semibold">Espacio para anuncios</p>
+          <!-- Descripción -->
+          <div class="mb-8">
+            <h2 class="text-xl font-semibold mb-4 text-foreground">Descripción</h2>
+            <p class="text-foreground/80 leading-relaxed"> • {casaData.description}</p>
+          </div>
+
+          <!-- Botón Me Interesa -->
+          <div class="mb-12">
+            <a href={`https://wa.me/+5354776027?text=Hola,%20estoy%20interesado%20en%20la%20casa%20${encodeURIComponent(casaData.title)}`} target="_blank" class="flex items-center justify-center gap-2 w-56 mx-auto bg-green-500 hover:bg-green-600 text-white px-8 py-4 rounded-xl font-semibold text-lg transition-colors shadow-lg">
+              Me interesa
+              
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  width="32"
+  height="32"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+>
+  <path d="M3 21l1.65 -3.8a9 9 0 1 1 3.4 2.9l-5.05 .9" />
+  <path d="M9 10a.5 .5 0 0 0 1 0v-1a.5 .5 0 0 0 -1 0v1a5 5 0 0 0 5 5h1a.5 .5 0 0 0 0 -1h-1a.5 .5 0 0 0 0 1" />
+</svg>
+
+            </a>
           </div>
         </div>
+      </>
+    ) : (
+      <div class="py-20 text-center text-muted-foreground">
+        <p class="text-lg font-semibold mb-2">Propiedad no encontrada</p>
+        <a href="/propiedades" class="text-foreground font-semibold hover:underline">Volver a propiedades</a>
       </div>
-    </div>
+    )}
 
     <!-- Footer -->
-    <Footer/>
+    <Footer />
   </div>
+
+  <script>
+    import { gsap } from "gsap";
+    
+    document.addEventListener('DOMContentLoaded', () => {
+      // Image slider
+      const slider = document.querySelector('.relative');
+      if (slider) {
+        gsap.fromTo(slider, { opacity: 0, scale: 0.95 }, { opacity: 1, scale: 1, duration: 0.8, ease: 'power2.out' });
+      }
+      
+      // Content sections
+      const content = document.querySelector('.max-w-7xl');
+      if (content) {
+        gsap.fromTo(content.children, 
+          { opacity: 0, y: 40 }, 
+          { opacity: 1, y: 0, duration: 0.7, stagger: 0.1, delay: 0.3, ease: 'power2.out' }
+        );
+      }
+    });
+  </script>
 
   <script is:inline>
     function changeImage(element) {
       const mainImage = document.getElementById('mainImage');
       mainImage.src = element.dataset.src;
       
+      // Actualizar el borde activo
       const thumbs = document.querySelectorAll('[data-index]');
       thumbs.forEach(thumb => {
-        thumb.classList.remove('border-seashell-500');
+        thumb.classList.remove('border-primary');
         thumb.classList.add('border-transparent');
       });
-      
       element.classList.remove('border-transparent');
-      element.classList.add('border-seashell-500');
+      element.classList.add('border-primary');
+    }
+
+    // Favoritos
+    const favoriteBtn = document.getElementById('favoriteBtn');
+    const heartIcon = document.getElementById('heartIcon');
+    const propertyId = favoriteBtn?.dataset.propertyId;
+
+    function getFavorites() {
+      const favs = localStorage.getItem('favorites');
+      return favs ? JSON.parse(favs) : [];
+    }
+
+    function saveFavorites(favs) {
+      localStorage.setItem('favorites', JSON.stringify(favs));
+    }
+
+    function updateHeartIcon() {
+      const favs = getFavorites();
+      const isFavorite = favs.includes(propertyId);
+      heartIcon.setAttribute('fill', isFavorite ? 'currentColor' : 'none');
+    }
+
+    if (favoriteBtn && propertyId) {
+      updateHeartIcon();
+      favoriteBtn.addEventListener('click', () => {
+        let favs = getFavorites();
+        if (favs.includes(propertyId)) {
+          favs = favs.filter(id => id !== propertyId);
+        } else {
+          favs.push(propertyId);
+        }
+        saveFavorites(favs);
+        updateHeartIcon();
+      });
     }
   </script>
 </Layout>

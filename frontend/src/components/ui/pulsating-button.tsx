@@ -109,7 +109,7 @@ export const PulsatingButton = React.forwardRef<
         }
         {...props}
       >
-        <span className="relative z-10">{children}</span>
+        <span className="relative flex items-center justify-center gap-2 z-10">{children}</span>
         <span
           aria-hidden="true"
           className={cn(

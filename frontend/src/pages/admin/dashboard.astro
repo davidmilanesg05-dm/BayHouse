@@ -1,6 +1,15 @@
 ---
 import '../../styles/global.css';
+import { supabase, type Property } from '../../lib/supabase';
+import { uploadFile } from '../../lib/upload';
+
 export const prerender = false;
+
+// Obtener propiedades al renderizar
+const { data: properties, error } = await supabase
+  .from('properties')
+  .select('*')
+  .order('created_at', { ascending: false });
 ---
 
 <!DOCTYPE html>
@@ -8,8 +17,8 @@ export const prerender = false;
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-  <link rel="icon" href="/favicon.ico" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="icon" href="/favicon.ico">
   <title>Dashboard - BayHouse Admin</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 </head>
@@ -57,7 +66,7 @@ export const prerender = false;
           </div>
           <div>
             <p class="text-sm text-seashell-600">Total Propiedades</p>
-            <p class="text-2xl font-bold text-seashell-900" id="totalProperties">6</p>
+            <p class="text-2xl font-bold text-seashell-900">{properties?.length || 0}</p>
           </div>
         </div>
       </div>
@@ -71,7 +80,7 @@ export const prerender = false;
           </div>
           <div>
             <p class="text-sm text-seashell-600">En Venta</p>
-            <p class="text-2xl font-bold text-seashell-900" id="forSale">6</p>
+            <p class="text-2xl font-bold text-seashell-900">{properties?.filter(p => !p.special_circuit).length || 0}</p>
           </div>
         </div>
       </div>
@@ -85,7 +94,7 @@ export const prerender = false;
           </div>
           <div>
             <p class="text-sm text-seashell-600">Circuito Especial</p>
-            <p class="text-2xl font-bold text-seashell-900" id="specialCircuit">6</p>
+            <p class="text-2xl font-bold text-seashell-900">{properties?.filter(p => p.special_circuit).length || 0}</p>
           </div>
         </div>
       </div>
@@ -119,9 +128,52 @@ export const prerender = false;
               <th class="px-6 py-4 text-left text-xs font-semibold text-seashell-600 uppercase tracking-wider">Acciones</th>
             </tr>
           </thead>
-          <tbody id="propertiesTable" class="divide-y divide-seashell-200">
+          <tbody class="divide-y divide-seashell-200">
+            {properties?.map(prop => (
+              <tr key={prop.id} class="hover:bg-seashell-50">
+                <td class="px-6 py-4">
+                  <div class="flex items-center gap-3">
+                    <div class="w-16 h-16 bg-seashell-100 rounded-lg overflow-hidden">
+                      <img src={prop.main_image_url} alt={prop.title} class="w-full h-full object-cover">
+                    </div>
+                    <div>
+                      <p class="font-semibold text-seashell-900">{prop.title}</p>
+                      <p class="text-sm text-seashell-500">ID: {prop.id.slice(0, 8)}...</p>
+                    </div>
+                  </div>
+                </td>
+                <td class="px-6 py-4 text-seashell-600">{prop.location}</td>
+                <td class="px-6 py-4 font-semibold text-seashell-900">{prop.price}</td>
+                <td class="px-6 py-4 text-seashell-600">{prop.beds} hab / {prop.baths} baños</td>
+                <td class="px-6 py-4">
+                  <span class={`px-3 py-1 rounded-full text-xs font-medium ${prop.special_circuit ? 'bg-yellow-100 text-yellow-800' : 'bg-green-100 text-green-800'}`}>
+                    {prop.special_circuit ? 'Especial' : 'En Venta'}
+                  </span>
+                </td>
+                <td class="px-6 py-4">
+                  <div class="flex gap-2">
+                    <button onclick={`editProperty('${JSON.stringify(prop)}')`} class="p-2 text-seashell-600 hover:bg-seashell-100 rounded-lg transition-colors">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+              </svg>
+            </button>
+            <button onclick={`deleteProperty('${prop.id}')`} class="p-2 text-red-600 hover:bg-red-100 rounded-lg transition-colors">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+              </svg>
+            </button>
+                  </div>
+                </td>
+              </tr>
+            )) || []}
           </tbody>
         </table>
+        {!properties || properties.length === 0 ? (
+          <div class="p-12 text-center text-seashell-600">
+            <p class="text-lg font-semibold mb-2">No hay propiedades aún</p>
+            <p class="text-sm">Agrega tu primera propiedad haciendo clic en "Nueva Venta"</p>
+          </div>
+        ) : null}
       </div>
     </div>
   </div>
@@ -139,6 +191,8 @@ export const prerender = false;
       </div>
       
       <form id="newPropertyForm" class="p-6 space-y-6">
+        <input type="hidden" name="id" id="propertyId">
+
         <!-- Título y Precio -->
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
@@ -157,28 +211,36 @@ export const prerender = false;
           <input type="text" name="location" required class="w-full px-4 py-3 border border-seashell-300 rounded-lg focus:ring-2 focus:ring-seashell-500 outline-none bg-white">
         </div>
         
-        <!-- Imágenes -->
         <div>
           <label class="block text-sm font-medium text-seashell-700 mb-2">Imagen Principal (URL) *</label>
-          <input type="url" name="mainImage" required placeholder="https://..." class="w-full px-4 py-3 border border-seashell-300 rounded-lg focus:ring-2 focus:ring-seashell-500 outline-none bg-white mb-4">
-          
-          <label class="block text-sm font-medium text-seashell-700 mb-2">Otras Imágenes (máx 15, una por línea)</label>
-          <textarea name="otherImages" rows="4" placeholder="https://...&#10;https://..." class="w-full px-4 py-3 border border-seashell-300 rounded-lg focus:ring-2 focus:ring-seashell-500 outline-none bg-white"></textarea>
+          <input type="url" name="main_image_url" id="mainImageUrl" required placeholder="https://..." class="w-full px-4 py-3 border border-seashell-300 rounded-lg focus:ring-2 focus:ring-seashell-500 outline-none bg-white">
+          <div id="mainImagePreviewContainer" class="mt-4 w-full h-40 bg-seashell-100 rounded-lg overflow-hidden hidden">
+            <img id="mainImagePreview" alt="Preview" class="w-full h-full object-cover">
+          </div>
+        </div>
+        
+        <div>
+          <label class="block text-sm font-medium text-seashell-700 mb-2">Otras Imágenes (máx 20 URLs)</label>
+          <div id="otherImagesContainer" class="space-y-2"></div>
+          <div id="otherImagesPreviewContainer" class="mt-4 flex flex-wrap gap-2"></div>
+          <button type="button" id="addOtherImageUrl" class="mt-2 px-4 py-2 bg-seashell-200 hover:bg-seashell-300 text-seashell-800 font-semibold rounded-lg transition-colors">
+            Añadir URL
+          </button>
         </div>
         
         <!-- Características Básicas -->
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div>
             <label class="block text-sm font-medium text-seashell-700 mb-2">Habitaciones *</label>
-            <input type="number" name="bedrooms" required min="1" class="w-full px-4 py-3 border border-seashell-300 rounded-lg focus:ring-2 focus:ring-seashell-500 outline-none bg-white">
+            <input type="number" name="beds" required min="1" class="w-full px-4 py-3 border border-seashell-300 rounded-lg focus:ring-2 focus:ring-seashell-500 outline-none bg-white">
           </div>
           <div>
             <label class="block text-sm font-medium text-seashell-700 mb-2">Baños *</label>
-            <input type="number" name="bathrooms" required min="1" class="w-full px-4 py-3 border border-seashell-300 rounded-lg focus:ring-2 focus:ring-seashell-500 outline-none bg-white">
+            <input type="number" name="baths" required min="1" class="w-full px-4 py-3 border border-seashell-300 rounded-lg focus:ring-2 focus:ring-seashell-500 outline-none bg-white">
           </div>
           <div>
-            <label class="block text-sm font-medium text-seashell-700 mb-2">Metros Cuadrados *</label>
-            <input type="number" name="squareMeters" required min="1" class="w-full px-4 py-3 border border-seashell-300 rounded-lg focus:ring-2 focus:ring-seashell-500 outline-none bg-white">
+            <label class="block text-sm font-medium text-seashell-700 mb-2">m² *</label>
+            <input type="number" name="sqft" required min="1" class="w-full px-4 py-3 border border-seashell-300 rounded-lg focus:ring-2 focus:ring-seashell-500 outline-none bg-white">
           </div>
         </div>
         
@@ -209,7 +271,7 @@ export const prerender = false;
               <span class="text-sm text-seashell-700">Cisterna</span>
             </label>
             <label class="flex items-center gap-2 cursor-pointer">
-              <input type="checkbox" name="specialCircuit" class="w-4 h-4 text-seashell-600 rounded focus:ring-seashell-500">
+              <input type="checkbox" name="special_circuit" class="w-4 h-4 text-seashell-600 rounded focus:ring-seashell-500">
               <span class="text-sm text-seashell-700">Circuito Especial</span>
             </label>
           </div>
@@ -226,98 +288,95 @@ export const prerender = false;
           <button type="button" id="cancelBtn" class="flex-1 px-6 py-3 bg-seashell-200 hover:bg-seashell-300 text-seashell-800 font-semibold rounded-lg transition-colors">
             Cancelar
           </button>
-          <button type="submit" class="flex-1 px-6 py-3 bg-seashell-900 hover:bg-seashell-800 text-white font-semibold rounded-lg transition-colors">
-            Crear Propiedad
+          <button type="submit" id="submitBtn" class="flex-1 px-6 py-3 bg-seashell-900 hover:bg-seashell-800 text-white font-semibold rounded-lg transition-colors flex items-center justify-center gap-2">
+            <span id="submitBtnText">Crear Propiedad</span>
+            <span id="submitBtnLoader" class="hidden"><i class="fas fa-spinner fa-spin"></i></span>
           </button>
         </div>
       </form>
     </div>
   </div>
 
-  <script>
-    let properties = [
-      { id: 1, title: 'Casa Moderna con Piscina', location: 'Camilo Cienfuegos, Bayamo', price: '$850,000', bedrooms: 4, bathrooms: 3, squareMeters: 2800, status: 'En Venta', specialCircuit: false, garage: true, patio: true, terrace: true, cistern: true, floors: 2, description: 'Hermosa casa moderna con piscina en el reparto Camilo Cienfuegos.' },
-      { id: 2, title: 'Villa de Lujo con Vista al Mar', location: 'Nuevo Bayamo', price: '$2,200,000', bedrooms: 5, bathrooms: 4, squareMeters: 4200, status: 'En Venta', specialCircuit: true, garage: true, patio: true, terrace: true, cistern: true, floors: 3, description: 'Villa de lujo con increíbles vistas al mar.' },
-      { id: 3, title: 'Casa de Campo Amplia', location: 'San Juan, Bayamo', price: '$620,000', bedrooms: 3, bathrooms: 2, squareMeters: 2100, status: 'En Venta', specialCircuit: false, garage: true, patio: true, terrace: false, cistern: true, floors: 1, description: 'Casa de campo perfecta para la familia.' },
-      { id: 4, title: 'Apartamento de Lujo en el Centro', location: 'El Cristo, Bayamo', price: '$1,500,000', bedrooms: 3, bathrooms: 2, squareMeters: 1800, status: 'En Venta', specialCircuit: true, garage: true, patio: false, terrace: true, cistern: false, floors: 1, description: 'Apartamento de lujo en el corazón de la ciudad.' },
-      { id: 5, title: 'Casa Familiar con Jardín', location: 'Jesús Menéndez, Bayamo', price: '$480,000', bedrooms: 4, bathrooms: 2, squareMeters: 2400, status: 'En Venta', specialCircuit: false, garage: false, patio: true, terrace: true, cistern: true, floors: 2, description: 'Casa familiar con amplio jardín.' },
-      { id: 6, title: 'Residencia Contemporánea', location: 'Las Caobas, Bayamo', price: '$1,850,000', bedrooms: 5, bathrooms: 4, squareMeters: 3500, status: 'En Venta', specialCircuit: true, garage: true, patio: true, terrace: true, cistern: true, floors: 3, description: 'Residencia contemporánea con acabados premium.' }
-    ];
+  <script is:inline>
+    // Previsualización de imagen principal
+    const mainImageUrlInput = document.getElementById('mainImageUrl');
+    const mainImagePreviewContainer = document.getElementById('mainImagePreviewContainer');
+    const mainImagePreview = document.getElementById('mainImagePreview');
 
-    const savedProperties = localStorage.getItem('bayhouseProperties');
-    if (savedProperties) {
-      properties = JSON.parse(savedProperties);
-    }
+    mainImageUrlInput.addEventListener('input', (e) => {
+      const url = e.target.value;
+      if (url && url.startsWith('http')) {
+        mainImagePreview.src = url;
+        mainImagePreviewContainer.classList.remove('hidden');
+      } else {
+        mainImagePreviewContainer.classList.add('hidden');
+      }
+    });
 
+    // Verificar autenticación
     if (localStorage.getItem('adminAuth') !== 'true') {
       window.location.href = '/admin';
     }
 
-    function renderPropertiesTable() {
-      const tableBody = document.getElementById('propertiesTable');
-      tableBody.innerHTML = properties.map(prop => `
-        <tr class="hover:bg-seashell-50">
-          <td class="px-6 py-4">
-            <div class="flex items-center gap-3">
-              <div class="w-16 h-16 bg-seashell-100 rounded-lg overflow-hidden">
-                <img src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=100&h=100&fit=crop" alt="" class="w-full h-full object-cover">
-              </div>
-              <div>
-                <p class="font-semibold text-seashell-900">${prop.title}</p>
-                <p class="text-sm text-seashell-500">ID: ${prop.id}</p>
-              </div>
-            </div>
-          </td>
-          <td class="px-6 py-4 text-seashell-600">${prop.location}</td>
-          <td class="px-6 py-4 font-semibold text-seashell-900">${prop.price}</td>
-          <td class="px-6 py-4 text-seashell-600">${prop.bedrooms} hab / ${prop.bathrooms} baños</td>
-          <td class="px-6 py-4">
-            <span class="px-3 py-1 ${prop.specialCircuit ? 'bg-yellow-100 text-yellow-800' : 'bg-green-100 text-green-800'} rounded-full text-xs font-medium">
-              ${prop.specialCircuit ? 'Especial' : 'En Venta'}
-            </span>
-          </td>
-          <td class="px-6 py-4">
-            <div class="flex gap-2">
-              <button onclick="editProperty(${prop.id})" class="p-2 text-seashell-600 hover:bg-seashell-100 rounded-lg transition-colors">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
-                </svg>
-              </button>
-              <button onclick="deleteProperty(${prop.id})" class="p-2 text-red-600 hover:bg-red-100 rounded-lg transition-colors">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
-                </svg>
-              </button>
-            </div>
-          </td>
-        </tr>
-      `).join('');
-      
-      document.getElementById('totalProperties').textContent = properties.length;
-      document.getElementById('forSale').textContent = properties.filter(p => !p.specialCircuit).length;
-      document.getElementById('specialCircuit').textContent = properties.filter(p => p.specialCircuit).length;
-    }
-
-    document.getElementById('logoutBtn').addEventListener('click', () => {
-      localStorage.removeItem('adminAuth');
-      window.location.href = '/admin';
-    });
-
+    // Modal
     const modal = document.getElementById('newPropertyModal');
     const newPropertyBtn = document.getElementById('newPropertyBtn');
     const closeModalBtn = document.getElementById('closeModalBtn');
     const cancelBtn = document.getElementById('cancelBtn');
     const newPropertyForm = document.getElementById('newPropertyForm');
+    const modalTitle = modal.querySelector('h3');
+    const submitBtnText = document.getElementById('submitBtnText');
 
-    newPropertyBtn.addEventListener('click', () => {
+    const openModal = (property = null) => {
+      newPropertyForm.reset();
+      document.getElementById('otherImagesContainer').innerHTML = '';
+
+      if (property) {
+        modalTitle.textContent = 'Editar Propiedad';
+        submitBtnText.textContent = 'Guardar Cambios';
+        document.getElementById('propertyId').value = property.id;
+
+        Object.keys(property).forEach(key => {
+          const input = newPropertyForm.elements[key];
+          if (input) {
+            if (input.type === 'checkbox') {
+              input.checked = property[key];
+            } else {
+              input.value = property[key];
+            }
+          }
+        });
+
+        if (property.main_image_url) {
+          mainImagePreview.src = property.main_image_url;
+          mainImagePreviewContainer.classList.remove('hidden');
+        }
+
+        if (property.other_image_urls) {
+          property.other_image_urls.forEach(url => addOtherImageUrlInput(url));
+        }
+
+      } else {
+        modalTitle.textContent = 'Nueva Venta';
+        submitBtnText.textContent = 'Crear Propiedad';
+        document.getElementById('propertyId').value = '';
+      }
+
       modal.classList.remove('hidden');
       modal.classList.add('flex');
-    });
+    };
+
+    newPropertyBtn.addEventListener('click', () => openModal());
 
     const closeModal = () => {
       modal.classList.add('hidden');
       modal.classList.remove('flex');
       newPropertyForm.reset();
+      // Limpiar previews
+      document.getElementById('mainImagePreviewContainer').classList.add('hidden');
+      document.getElementById('mainImagePreview').src = '';
+      document.getElementById('otherImagesPreviewContainer').innerHTML = '';
+      document.getElementById('otherImagesContainer').innerHTML = '';
     };
 
     closeModalBtn.addEventListener('click', closeModal);
@@ -326,50 +385,156 @@ export const prerender = false;
       if (e.target === modal) closeModal();
     });
 
-    newPropertyForm.addEventListener('submit', (e) => {
+    // Logout
+    document.getElementById('logoutBtn').addEventListener('click', () => {
+      localStorage.removeItem('adminAuth');
+      window.location.href = '/admin';
+    });
+
+    // Eliminar propiedad
+    window.deleteProperty = async (id) => {
+      if (confirm('¿Estás seguro de eliminar esta propiedad?')) {
+        try {
+          const response = await fetch('/api/delete-property', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id })
+          });
+          if (response.ok) {
+            window.location.reload();
+          }
+        } catch (e) {
+          alert('Error al eliminar la propiedad');
+          console.error(e);
+        }
+      }
+    };
+
+    // Editar propiedad
+    window.editProperty = (propData) => {
+      const property = JSON.parse(propData);
+      openModal(property);
+    };
+
+    // Manejo dinámico de URLs de otras imágenes
+    const otherImagesContainer = document.getElementById('otherImagesContainer');
+    const addOtherImageUrlBtn = document.getElementById('addOtherImageUrl');
+
+    const addOtherImageUrlInput = (url = '') => {
+      const totalInputs = otherImagesContainer.querySelectorAll('input').length;
+      if (totalInputs >= 20) {
+        addOtherImageUrlBtn.disabled = true;
+        addOtherImageUrlBtn.textContent = 'Límite alcanzado';
+        return;
+      }
+
+      const div = document.createElement('div');
+      div.className = 'flex items-center gap-2';
+      const input = document.createElement('input');
+      input.type = 'url';
+      input.name = 'other_image_urls';
+      input.className = 'w-full px-4 py-2 border border-seashell-300 rounded-lg';
+      input.placeholder = 'https://...';
+      input.value = url;
+
+      const previewContainer = document.getElementById('otherImagesPreviewContainer');
+      const imgDiv = document.createElement('div');
+      imgDiv.className = 'relative w-20 h-20 bg-seashell-100 rounded-lg overflow-hidden';
+      const img = document.createElement('img');
+      img.className = 'w-full h-full object-cover';
+      if (url) img.src = url;
+      imgDiv.appendChild(img);
+
+      input.addEventListener('input', (e) => {
+        const newUrl = e.target.value;
+        if (newUrl && newUrl.startsWith('http')) {
+          img.src = newUrl;
+        } else {
+          img.src = '';
+        }
+      });
+
+      previewContainer.appendChild(imgDiv);
+
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'p-2 text-red-500 hover:bg-red-100 rounded-lg';
+      button.innerHTML = '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>';
+      button.onclick = () => {
+        div.remove();
+        imgDiv.remove();
+        addOtherImageUrlBtn.disabled = false;
+        addOtherImageUrlBtn.textContent = 'Añadir URL';
+      };
+
+      div.appendChild(input);
+      div.appendChild(button);
+      otherImagesContainer.appendChild(div);
+    };
+
+    addOtherImageUrlBtn.addEventListener('click', () => addOtherImageUrlInput());
+
+    // Formulario de nueva propiedad
+    newPropertyForm.addEventListener('submit', async (e) => {
       e.preventDefault();
       
+      const submitBtn = document.getElementById('submitBtn');
+      const submitBtnText = document.getElementById('submitBtnText');
+      const submitBtnLoader = document.getElementById('submitBtnLoader');
+      
+      // Deshabilitar botón mientras se carga
+      submitBtn.disabled = true;
+      submitBtnText.textContent = 'Creando...';
+      submitBtnLoader.classList.remove('hidden');
+      
       const formData = new FormData(newPropertyForm);
-      const newProperty = {
-        id: properties.length > 0 ? Math.max(...properties.map(p => p.id)) + 1 : 1,
+      const propertyId = formData.get('id');
+
+      const otherImageInputs = newPropertyForm.querySelectorAll('input[name="other_image_urls"]');
+      const other_image_urls = Array.from(otherImageInputs).map(input => input.value).filter(Boolean);
+
+      const propertyData = {
         title: formData.get('title'),
         price: formData.get('price'),
         location: formData.get('location'),
-        bedrooms: parseInt(formData.get('bedrooms')),
-        bathrooms: parseInt(formData.get('bathrooms')),
-        squareMeters: parseInt(formData.get('squareMeters')),
+        beds: parseInt(formData.get('beds')),
+        baths: parseInt(formData.get('baths')),
+        sqft: parseInt(formData.get('sqft')),
         floors: parseInt(formData.get('floors')),
         garage: formData.get('garage') === 'on',
         patio: formData.get('patio') === 'on',
         terrace: formData.get('terrace') === 'on',
         cistern: formData.get('cistern') === 'on',
-        specialCircuit: formData.get('specialCircuit') === 'on',
+        special_circuit: formData.get('special_circuit') === 'on',
         description: formData.get('description'),
-        status: 'En Venta',
-        mainImage: formData.get('mainImage'),
-        otherImages: formData.get('otherImages') ? formData.get('otherImages').split('\n').filter(url => url.trim()) : []
+        main_image_url: formData.get('main_image_url'),
+        other_image_urls
       };
-      
-      properties.push(newProperty);
-      localStorage.setItem('bayhouseProperties', JSON.stringify(properties));
-      
-      closeModal();
-      renderPropertiesTable();
-    });
 
-    window.deleteProperty = (id) => {
-      if (confirm('¿Estás seguro de eliminar esta propiedad?')) {
-        properties = properties.filter(p => p.id !== id);
-        localStorage.setItem('bayhouseProperties', JSON.stringify(properties));
-        renderPropertiesTable();
+      const apiEndpoint = propertyId ? `/api/update-property?id=${propertyId}` : '/api/add-property';
+
+      try {
+        const response = await fetch(apiEndpoint, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(propertyData)
+        });
+        
+        if (response.ok) {
+          closeModal();
+          window.location.reload();
+        } else {
+          alert('Error al crear la propiedad');
+        }
+      } catch (e) {
+        alert('Error al crear la propiedad');
+        console.error(e);
+      } finally {
+        submitBtn.disabled = false;
+        submitBtnText.textContent = 'Crear Propiedad';
+        submitBtnLoader.classList.add('hidden');
       }
-    };
-
-    window.editProperty = (id) => {
-      alert(`Editar propiedad ID: ${id} - Esta funcionalidad se puede extender`);
-    };
-
-    renderPropertiesTable();
+    });
   </script>
 </body>
 </html>

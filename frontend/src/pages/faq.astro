@@ -1,0 +1,137 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout>
+  <main class="bg-background text-foreground min-h-screen">
+    <!-- Back Button -->
+    <section class="pt-8 px-4">
+      <div class="max-w-7xl mx-auto">
+        <a href="/" class="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors mb-8">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="m15 18-6-6 6-6"></path>
+          </svg>
+          <span class="font-semibold">Volver</span>
+        </a>
+      </div>
+    </section>
+
+    <!-- Hero Section -->
+    <section class="pb-16 px-4">
+      <div class="max-w-7xl mx-auto text-center">
+        <h1 class="text-5xl md:text-6xl font-bold mb-6">Preguntas <span class="text-primary">Frecuentes</span></h1>
+        <p class="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto">Todo lo que necesitas saber sobre nuestros servicios inmobiliarios.</p>
+      </div>
+    </section>
+
+    <!-- FAQ Content -->
+    <section class="py-16 px-4">
+      <div class="max-w-4xl mx-auto space-y-6">
+        {[
+          {
+            question: "¿Cómo puedo listar mi propiedad en BayHouse?",
+            answer: "Simplemente contáctanos a través de nuestra página de contacto o por WhatsApp. Uno de nuestros agentes se pondrá en contacto contigo para guiarte por todo el proceso de publicación."
+          },
+          {
+            question: "¿Cuánto tiempo tarda en venderse una propiedad?",
+            answer: "El tiempo varía según la ubicación, precio y características de la propiedad. En promedio, nuestras propiedades se venden en 30 a 90 días."
+          },
+          {
+            question: "¿Qué servicios incluís al comprar una propiedad?",
+            answer: "Ofrecemos asesoramiento completo: búsqueda personalizada, visitas guiadas, negociación de precio, trámite de documentos y seguimiento hasta la escrituración."
+          },
+          {
+            question: "¿Es necesario pagar algo por adelantado?",
+            answer: "No, no cobramos honorarios hasta que la transacción se haya completado con éxito. Trabajamos a contingencias."
+          },
+          {
+            question: "¿En qué zonas de Bayamo trabajan?",
+            answer: "Trabajamos en todas las zonas de Bayamo y alrededores, incluyendo Camilo Cienfuegos, Nuevo Bayamo, San Juan, El Cristo y más."
+          },
+          {
+            question: "¿Cómo puedo agendar una visita a una propiedad?",
+            answer: "Puedes agendar una visita directamente desde la página de la propiedad, por WhatsApp o llamando a nuestra oficina."
+          }
+        ].map((faq, index) => (
+          <div key={index} class="bg-card p-8 rounded-2xl shadow-lg border border-border">
+            <h3 class="text-xl font-bold mb-4 text-foreground">{faq.question}</h3>
+            <p class="text-muted-foreground">{faq.answer}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="py-16 px-4 bg-card">
+      <div class="max-w-4xl mx-auto text-center">
+        <h2 class="text-3xl font-bold mb-6">¿No encontraste tu pregunta?</h2>
+        <p class="text-muted-foreground mb-8 text-lg">Contáctanos y estaremos encantados de ayudarte.</p>
+        <a 
+          href="/contact" 
+          class="inline-flex items-center gap-2 bg-primary text-primary-foreground px-8 py-4 rounded-xl font-semibold text-lg hover:bg-primary/90 transition-colors"
+        >
+          Contactarnos
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24"><path d="M9.1 18l2.9-3 2.9-3L12 9 9.1 6"></path></svg>
+        </a>
+      </div>
+    </section>
+  </main>
+</Layout>
+
+<script>
+  import { gsap } from "gsap";
+  import { ScrollTrigger } from "gsap/ScrollTrigger";
+  
+  gsap.registerPlugin(ScrollTrigger);
+  
+  document.addEventListener('DOMContentLoaded', () => {
+    // Hero section
+    const heroTitle = document.querySelector('h1');
+    const heroSubtitle = document.querySelector('h1 + p');
+    
+    if (heroTitle) {
+      gsap.fromTo(heroTitle, { opacity: 0, y: 50 }, { opacity: 1, y: 0, duration: 1, ease: 'power3.out' });
+    }
+    if (heroSubtitle) {
+      gsap.fromTo(heroSubtitle, { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.8, delay: 0.3, ease: 'power2.out' });
+    }
+    
+    // FAQ cards
+    const faqCards = document.querySelectorAll('.bg-card');
+    if (faqCards.length > 0) {
+      gsap.fromTo(faqCards, 
+        { opacity: 0, y: 40 }, 
+        { 
+          opacity: 1, 
+          y: 0, 
+          duration: 0.6, 
+          stagger: 0.1, 
+          ease: 'power2.out',
+          scrollTrigger: {
+            trigger: faqCards[0].parentElement,
+            start: 'top 80%'
+          }
+        }
+      );
+    }
+    
+    // CTA section
+    const ctaSection = document.querySelector('.bg-card:last-of-type');
+    if (ctaSection) {
+      gsap.fromTo(ctaSection.children, 
+        { opacity: 0, y: 40 }, 
+        { 
+          opacity: 1, 
+          y: 0, 
+          duration: 0.8, 
+          stagger: 0.2, 
+          ease: 'power2.out',
+          scrollTrigger: {
+            trigger: ctaSection,
+            start: 'top 80%'
+          }
+        }
+      );
+    }
+  });
+</script>

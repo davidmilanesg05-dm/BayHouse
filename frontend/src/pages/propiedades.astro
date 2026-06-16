@@ -1,17 +1,25 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import FilterModal from '../components/FilterModal.astro';
+import { supabase, type Property } from '../lib/supabase';
+
+export const prerender = false;
+
+// Obtener propiedades
+const { data: properties, error } = await supabase
+  .from('properties')
+  .select('*')
+  .order('created_at', { ascending: false });
 ---
 
 <Layout>
-  <main class="bg-seashell-50 text-seashell-900 min-h-screen">
+  <main class="bg-background text-foreground min-h-screen">
     <section class="py-8 px-4">
       <div class="max-w-7xl mx-auto">
         <!-- Back Button & Title -->
         <div class="flex items-center gap-6 mb-8">
-          <a href="/" class="flex items-center gap-2 text-seashell-600 hover:text-seashell-900 transition-colors">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="m15 18-6-6 6-6"></path>
-            </svg>
+          <a href="/" class="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" data-icon="SvgChevronLeft" aria-hidden="true"><path d="M14.9 6L12 9l-2.9 3 2.9 3 2.9 3"></path></svg>
             <span class="font-semibold">Volver</span>
           </a>
         </div>
@@ -20,197 +28,306 @@ import Layout from '../layouts/Layout.astro';
         <div class="flex items-center gap-4 mb-10 max-w-3xl mx-auto">
           <div class="flex-1 relative">
             <input 
+              id="property-search-input"
               type="text" 
               placeholder="Busca por ubicación, tipo de propiedad..." 
-              class="w-full pl-12 pr-4 py-3 border border-seashell-200 rounded-full bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-seashell-400"
+              class="w-full pl-12 pr-4 py-3 border border-border rounded-full bg-card shadow-sm focus:outline-none focus:ring-2 focus:ring-ring"
             />
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="absolute left-4 top-1/2 transform -translate-y-1/2 text-seashell-400">
-              <circle cx="11" cy="11" r="8"></circle>
-              <path d="m21 21-4.35-4.35"></path>
-            </svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" data-icon="SvgSearch" aria-hidden="true" class="absolute left-4 top-1/2 transform -translate-y-1/2 text-muted-foreground"><path d="M10.1 3a7.1 7.1 0 11-5.02 2.08A7.074 7.074 0 0110.1 3zM21 21l-2.9-2.9-2.9-2.9"></path></svg>
           </div>
           
-          <button class="p-3 bg-white border border-seashell-200 rounded-full shadow-sm hover:bg-seashell-100 transition-colors">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-seashell-700">
-              <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
-            </svg>
+          <button id="open-filter-modal" aria-label="Abrir filtros avanzados" class="p-3 bg-card border border-border rounded-full shadow-sm hover:bg-muted transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" data-icon="SvgFilter" aria-hidden="true" class="text-muted-foreground"><path d="M3 4.879h18M5.152 9.433h13.7M7.6 14.277h8.8m-7.335 4.844h5.87"></path></svg>
           </button>
         </div>
 
         <!-- Properties Grid -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {[
-            {
-              id: "1",
-              title: "Casa Moderna con Piscina",
-              location: "Camilo Cienfuegos, Bayamo",
-              price: "$850,000",
-              beds: 4,
-              baths: 3,
-              sqft: 2800,
-              image: "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&h=600&fit=crop"
-            },
-            {
-              id: "2",
-              title: "Villa de Lujo con Vista al Mar",
-              location: "Nuevo Bayamo",
-              price: "$2,200,000",
-              beds: 5,
-              baths: 4,
-              sqft: 4200,
-              image: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&h=600&fit=crop"
-            },
-            {
-              id: "3",
-              title: "Casa de Campo Amplia",
-              location: "San Juan, Bayamo",
-              price: "$620,000",
-              beds: 3,
-              baths: 2,
-              sqft: 2100,
-              image: "https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=800&h=600&fit=crop"
-            },
-            {
-              id: "4",
-              title: "Apartamento de Lujo en el Centro",
-              location: "El Cristo, Bayamo",
-              price: "$1,500,000",
-              beds: 3,
-              baths: 2,
-              sqft: 1800,
-              image: "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800&h=600&fit=crop"
-            },
-            {
-              id: "5",
-              title: "Casa Familiar con Jardín",
-              location: "Jesús Menéndez, Bayamo",
-              price: "$480,000",
-              beds: 4,
-              baths: 2,
-              sqft: 2400,
-              image: "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=800&h=600&fit=crop"
-            },
-            {
-              id: "6",
-              title: "Residencia Contemporánea",
-              location: "Las Caobas, Bayamo",
-              price: "$1,850,000",
-              beds: 5,
-              baths: 4,
-              sqft: 3500,
-              image: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800&h=600&fit=crop"
-            },
-            {
-              id: "7",
-              title: "Penthouse con Terraza",
-              location: "Roberto Reyes, Bayamo",
-              price: "$1,250,000",
-              beds: 3,
-              baths: 3,
-              sqft: 2200,
-              image: "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&h=600&fit=crop"
-            },
-            {
-              id: "8",
-              title: "Loft Industrial Moderno",
-              location: "Micro V, Bayamo",
-              price: "$995,000",
-              beds: 2,
-              baths: 2,
-              sqft: 1500,
-              image: "https://images.unsplash.com/photo-1600047509807-ba8f99d2cdde?w=800&h=600&fit=crop"
-            },
-            {
-              id: "9",
-              title: "Mansión con Cancha de Golf",
-              location: "Reparto Ojeda, Bayamo",
-              price: "$5,500,000",
-              beds: 6,
-              baths: 7,
-              sqft: 8500,
-              image: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&h=600&fit=crop"
-            },
-            {
-              id: "10",
-              title: "Apartamento Skyline",
-              location: "El Polígono, Bayamo",
-              price: "$780,000",
-              beds: 2,
-              baths: 2,
-              sqft: 1300,
-              image: "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800&h=600&fit=crop"
-            },
-            {
-              id: "11",
-              title: "Finca con Viñedo",
-              location: "Camilo Cienfuegos, Bayamo",
-              price: "$2,800,000",
-              beds: 4,
-              baths: 3,
-              sqft: 3800,
-              image: "https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?w=800&h=600&fit=crop"
-            },
-            {
-              id: "12",
-              title: "Casa con Piscina Infinity",
-              location: "Nuevo Bayamo",
-              price: "$3,500,000",
-              beds: 5,
-              baths: 5,
-              sqft: 5200,
-              image: "https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=800&h=600&fit=crop"
-            }
-          ].map((casa) => (
-            <a href={`/casa/${casa.id}`} class="block bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300 hover:scale-[1.02] transition-transform">
-              <div class="relative h-56 overflow-hidden">
-                <img src={casa.image} alt={casa.title} class="w-full h-full object-cover hover:scale-105 transition-transform duration-300" />
-                <div class="absolute top-4 left-4 bg-white px-3 py-1 rounded-full text-sm font-semibold text-seashell-900">
-                  En Venta
+        <div id="properties-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {properties?.map((casa) => (
+            <div key={casa.id} class="relative block bg-card rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02]">
+              <a href={`/casa/${casa.id}`} class="block">
+                <div class="relative h-56 overflow-hidden">
+                  <img src={casa.main_image_url} alt={casa.title} class="w-full h-full object-cover hover:scale-105 transition-transform duration-300" />
+                  <div class="absolute top-4 left-4 bg-card px-3 py-1 rounded-full text-sm font-semibold text-foreground">
+                    {casa.special_circuit ? 'Circuito Especial' : 'En Venta'}
+                  </div>
                 </div>
-              </div>
               <div class="p-5">
-                <div class="text-2xl font-bold text-seashell-900 mb-2">{casa.price}</div>
-                <h3 class="text-lg font-semibold text-seashell-800 mb-1">{casa.title}</h3>
-                <div class="flex items-center gap-2 text-seashell-500 mb-4">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0Z"></path>
-                    <circle cx="12" cy="10" r="3"></circle>
-                  </svg>
+                <div class="text-2xl font-bold text-foreground mb-2">{casa.price}</div>
+                <h3 class="text-lg font-semibold text-foreground mb-1">{casa.title}</h3>
+                <div class="flex items-center gap-2 text-muted-foreground mb-4">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" data-icon="SvgMapPin" aria-hidden="true"><path d="M17.116 13.391h0L12 21l-5.258-7.8q-.1-.135-.186-.276l-.027-.04h0a6.459 6.459 0 1110.585.505zM12 7.175a2.3 2.3 0 102.3 2.3 2.3 2.3 0 00-2.3-2.3z"></path></svg>
                   <span class="text-sm">{casa.location}</span>
                 </div>
-                <div class="flex items-center justify-between pt-4 border-t border-seashell-100">
-                  <div class="flex items-center gap-1 text-seashell-600">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                      <path d="M2 4v16"></path>
-                      <path d="M6 8V4"></path>
-                      <path d="M10 12V4"></path>
-                      <path d="M14 16V4"></path>
-                      <path d="M18 20V4"></path>
-                      <path d="M22 8V4"></path>
-                    </svg>
+                <div class="flex items-center justify-between pt-4 border-t border-border">
+                  <div class="flex items-center gap-1 text-muted-foreground">
+                   <svg xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 -960 960 960" width="18px" fill="currentColor"><path d="M80-200v-240q0-27 11-49t29-39v-112q0-50 35-85t85-35h160q23 0 43 8.5t37 23.5q17-15 37-23.5t43-8.5h160q50 0 85 35t35 85v112q18 17 29 39t11 49v240h-80v-80H160v80H80Zm440-360h240v-80q0-17-11.5-28.5T720-680H560q-17 0-28.5 11.5T520-640v80Zm-320 0h240v-80q0-17-11.5-28.5T400-680H240q-17 0-28.5 11.5T200-640v80Zm-40 200h640v-80q0-17-11.5-28.5T760-480H200q-17 0-28.5 11.5T160-440v80Zm640 0H160h640Z"></path></svg>
                     <span class="text-sm">{casa.beds} Hab.</span>
                   </div>
-                  <div class="flex items-center gap-1 text-seashell-600">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                      <path d="M12 2v20"></path>
-                      <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
-                    </svg>
+                  <div class="flex items-center gap-1 text-muted-foreground">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 -960 960 960" width="18px" fill="currentColor"><path d="M223.5-623.5Q200-647 200-680t23.5-56.5Q247-760 280-760t56.5 23.5Q360-713 360-680t-23.5 56.5Q313-600 280-600t-56.5-23.5ZM200-80q-17 0-28.5-11.5T160-120q-33 0-56.5-23.5T80-200v-240h120v-30q0-38 26-64t64-26q20 0 37 8t31 22l56 62q8 8 15.5 15t16.5 13h274v-326q0-14-10-24t-24-10q-6 0-11.5 2.5T664-790l-50 50q5 17 2 33.5T604-676L494-788q14-9 30-11.5t32 3.5l50-50q16-16 36.5-25t43.5-9q48 0 81 33t33 81v326h80v240q0 33-23.5 56.5T800-120q0 17-11.5 28.5T760-80H200Zm-40-120h640v-160H160v160Zm0 0h640-640Z"></path></svg>
                     <span class="text-sm">{casa.baths} Baños</span>
                   </div>
-                  <div class="flex items-center gap-1 text-seashell-600">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                      <rect width="18" height="18" x="3" y="3" rx="2"></rect>
-                      <path d="M3 9h18"></path>
-                      <path d="M9 21V9"></path>
-                    </svg>
-                    <span class="text-sm">{casa.sqft} ft²</span>
+                  <div class="flex items-center gap-1 text-muted-foreground">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 -960 960 960" width="18px" fill="currentColor"><path d="M208-120q-37 0-62.5-25.5T120-208v-548q0-29 27-40.5t47 8.5l90 90-54 54 28 28 54-54 104 104-54 54 28 28 54-54 104 104-54 54 28 28 54-54 104 104-54 54 28 28 54-54 80 80q20 20 8.5 47T756-120H208Zm32-120h332L240-572v332Z"></path></svg>
+                    <span class="text-sm">{casa.sqft} m²</span>
                   </div>
                 </div>
               </div>
-            </a>
-          ))}
+              </a>
+              <button class="favorite-btn absolute top-4 right-4 p-2 bg-card rounded-full shadow-md hover:bg-muted transition-colors" data-property-id={String(casa.id)}>
+                <svg class="heart-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24"><path d="M19.616 5.673a4.738 4.738 0 00-6.7 0L12 6.586l-.913-.913a4.739 4.739 0 00-6.7 6.7l.913.913 6.7 6.7 6.7-6.7.913-.913a4.738 4.738 0 000-6.7z"></path></svg>
+              </button>
+            </div>
+          )) || []}
         </div>
+        
+        {!properties || properties.length === 0 ? (
+          <div class="py-20 text-center text-muted-foreground">
+            <p class="text-lg font-semibold mb-2">No hay propiedades disponibles</p>
+            <p class="text-sm">Vuelve más tarde o contacta con nosotros</p>
+          </div>
+        ) : null}
       </div>
     </section>
+    <FilterModal />
   </main>
 </Layout>
+
+<script define:vars={{ allProperties: properties }}>
+document.addEventListener('DOMContentLoaded', () => {
+  const searchInput = document.getElementById('property-search-input');
+  const propertiesGrid = document.getElementById('properties-grid');
+  
+  // Modal de filtros
+  const filterModal = document.getElementById('filter-modal');
+  const openFilterModalBtn = document.getElementById('open-filter-modal');
+  const closeFilterModalBtn = document.getElementById('close-filter-modal');
+  const applyFiltersBtn = document.getElementById('apply-filters-btn');
+  const clearFiltersBtn = document.getElementById('clear-filters-btn');
+
+  const minPriceInput = document.getElementById('min-price');
+  const maxPriceInput = document.getElementById('max-price');
+  const minSqftInput = document.getElementById('min-sqft');
+  const maxSqftInput = document.getElementById('max-sqft');
+  const minBedsInput = document.getElementById('min-beds');
+  const maxBedsInput = document.getElementById('max-beds');
+  const minBathsInput = document.getElementById('min-baths');
+  const maxBathsInput = document.getElementById('max-baths');
+
+  if (!searchInput || !propertiesGrid || !filterModal) {
+    return;
+  }
+
+  openFilterModalBtn.addEventListener('click', () => filterModal.classList.remove('hidden'));
+  closeFilterModalBtn.addEventListener('click', () => filterModal.classList.add('hidden'));
+  applyFiltersBtn.addEventListener('click', () => {
+    applyAllFilters();
+    filterModal.classList.add('hidden');
+  });
+  clearFiltersBtn.addEventListener('click', () => {
+    minPriceInput.value = '';
+    maxPriceInput.value = '';
+    minSqftInput.value = '';
+    maxSqftInput.value = '';
+    minBedsInput.value = '';
+    maxBedsInput.value = '';
+    minBathsInput.value = '';
+    maxBathsInput.value = '';
+    applyAllFilters();
+  });
+
+  const levenshtein = (s1, s2) => {
+    if (s1.length < s2.length) { return levenshtein(s2, s1); }
+    if (s2.length === 0) { return s1.length; }
+    let previousRow = Array.from({ length: s2.length + 1 }, (_, i) => i);
+    for (let i = 0; i < s1.length; i++) {
+      let currentRow = [i + 1];
+      for (let j = 0; j < s2.length; j++) {
+        let insertions = previousRow[j + 1] + 1;
+        let deletions = currentRow[j] + 1;
+        let substitutions = previousRow[j] + (s1[i] !== s2[j]);
+        currentRow.push(Math.min(insertions, deletions, substitutions));
+      }
+      previousRow = currentRow;
+    }
+    return previousRow[previousRow.length - 1];
+  };
+
+  const createPropertyCardHTML = (casa) => {
+    const isFavorite = getFavorites().includes(String(casa.id));
+    return `
+      <div class="relative block bg-card rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02]">
+        <a href="/casa/${casa.id}" class="block">
+          <div class="relative h-56 overflow-hidden">
+            <img src="${casa.main_image_url}" alt="${casa.title}" class="w-full h-full object-cover hover:scale-105 transition-transform duration-300">
+            <div class="absolute top-4 left-4 bg-card px-3 py-1 rounded-full text-sm font-semibold text-foreground">
+              ${casa.special_circuit ? 'Circuito Especial' : 'En Venta'}
+            </div>
+          </div>
+        <div class="p-5">
+          <div class="text-2xl font-bold text-foreground mb-2">${casa.price}</div>
+          <h3 class="text-lg font-semibold text-foreground mb-1">${casa.title}</h3>
+          <div class="flex items-center gap-2 text-muted-foreground mb-4">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" data-icon="SvgMapPin" aria-hidden="true"><path d="M17.116 13.391h0L12 21l-5.258-7.8q-.1-.135-.186-.276l-.027-.04h0a6.459 6.459 0 1110.585.505zM12 7.175a2.3 2.3 0 102.3 2.3 2.3 2.3 0 00-2.3-2.3z"></path></svg>
+            <span class="text-sm">${casa.location}</span>
+          </div>
+          <div class="flex items-center justify-between pt-4 border-t border-border">
+            <div class="flex items-center gap-1 text-muted-foreground">
+             <svg xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 -960 960 960" width="18px" fill="currentColor"><path d="M80-200v-240q0-27 11-49t29-39v-112q0-50 35-85t85-35h160q23 0 43 8.5t37 23.5q17-15 37-23.5t43-8.5h160q50 0 85 35t35 85v112q18 17 29 39t11 49v240h-80v-80H160v80H80Zm440-360h240v-80q0-17-11.5-28.5T720-680H560q-17 0-28.5 11.5T520-640v80Zm-320 0h240v-80q0-17-11.5-28.5T400-680H240q-17 0-28.5 11.5T200-640v80Zm-40 200h640v-80q0-17-11.5-28.5T760-480H200q-17 0-28.5 11.5T160-440v80Zm640 0H160h640Z"></path></svg>
+              <span class="text-sm">${casa.beds} Hab.</span>
+            </div>
+            <div class="flex items-center gap-1 text-muted-foreground">
+              <svg xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 -960 960 960" width="18px" fill="currentColor"><path d="M223.5-623.5Q200-647 200-680t23.5-56.5Q247-760 280-760t56.5 23.5Q360-713 360-680t-23.5 56.5Q313-600 280-600t-56.5-23.5ZM200-80q-17 0-28.5-11.5T160-120q-33 0-56.5-23.5T80-200v-240h120v-30q0-38 26-64t64-26q20 0 37 8t31 22l56 62q8 8 15.5 15t16.5 13h274v-326q0-14-10-24t-24-10q-6 0-11.5 2.5T664-790l-50 50q5 17 2 33.5T604-676L494-788q14-9 30-11.5t32 3.5l50-50q16-16 36.5-25t43.5-9q48 0 81 33t33 81v326h80v240q0 33-23.5 56.5T800-120q0 17-11.5 28.5T760-80H200Zm-40-120h640v-160H160v160Zm0 0h640-640Z"></path></svg>
+              <span class="text-sm">${casa.baths} Baños</span>
+            </div>
+            <div class="flex items-center gap-1 text-muted-foreground">
+              <svg xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 -960 960 960" width="18px" fill="currentColor"><path d="M208-120q-37 0-62.5-25.5T120-208v-548q0-29 27-40.5t47 8.5l90 90-54 54 28 28 54-54 104 104-54 54 28 28 54-54 104 104-54 54 28 28 54-54 80 80q20 20 8.5 47T756-120H208Zm32-120h332L240-572v332Z"></path></svg>
+              <span class="text-sm">${casa.sqft} m²</span>
+            </div>
+          </div>
+        </div>
+        </a>
+        <button class="favorite-btn absolute top-4 right-4 p-2 bg-card rounded-full shadow-md hover:bg-muted transition-colors" data-property-id="${casa.id}">
+          <svg class="heart-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" stroke="currentColor" fill="${isFavorite ? 'currentColor' : 'none'}" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24"><path d="M19.616 5.673a4.738 4.738 0 00-6.7 0L12 6.586l-.913-.913a4.739 4.739 0 00-6.7 6.7l.913.913 6.7 6.7 6.7-6.7.913-.913a4.738 4.738 0 000-6.7z"></path></svg>
+        </button>
+      </div>
+    `;
+  };
+
+  const renderProperties = (props) => {
+    if (!props || props.length === 0) {
+      propertiesGrid.innerHTML = `<p class="col-span-full text-center text-seashell-600 py-10">No se encontraron propiedades que coincidan con los filtros.</p>`;
+      return;
+    }
+    propertiesGrid.innerHTML = props.map(createPropertyCardHTML).join('');
+  };
+
+  const parsePrice = (priceStr) => {
+    if (typeof priceStr !== 'string') return 0;
+    return parseFloat(priceStr.replace(/[^\d.-]/g, ''));
+  };
+
+  const applyAllFilters = () => {
+    const searchTerm = searchInput.value.toLowerCase().trim();
+    const minPrice = parseFloat(minPriceInput.value) || 0;
+    const maxPrice = parseFloat(maxPriceInput.value) || Infinity;
+    const minSqft = parseFloat(minSqftInput.value) || 0;
+    const maxSqft = parseFloat(maxSqftInput.value) || Infinity;
+    const minBeds = parseFloat(minBedsInput.value) || 0;
+    const maxBeds = parseFloat(maxBedsInput.value) || Infinity;
+    const minBaths = parseFloat(minBathsInput.value) || 0;
+    const maxBaths = parseFloat(maxBathsInput.value) || Infinity;
+
+    const threshold = 2; // Levenshtein threshold
+
+    const filtered = allProperties.filter(prop => {
+      // Filtro de Texto
+      const title = (prop.title || '').toLowerCase();
+      const location = (prop.location || '').toLowerCase();
+      let textMatch = true;
+      if (searchTerm) {
+        const searchWords = searchTerm.split(' ').filter(w => w);
+        textMatch = searchWords.every(word => {
+          if (title.includes(word) || location.includes(word)) return true;
+          const titleWords = title.split(' ');
+          const locationWords = location.split(' ');
+          return titleWords.some(tWord => levenshtein(tWord, word) <= threshold) || 
+                 locationWords.some(lWord => levenshtein(lWord, word) <= threshold);
+        });
+      }
+
+      // Filtro de Precio
+      const price = parsePrice(prop.price);
+      const priceMatch = price >= minPrice && price <= maxPrice;
+
+      // Filtro de Metros Cuadrados
+      const sqft = prop.sqft;
+      const sqftMatch = sqft >= minSqft && sqft <= maxSqft;
+
+      // Filtro de Habitaciones
+      const beds = prop.beds;
+      const bedsMatch = beds >= minBeds && beds <= maxBeds;
+
+      // Filtro de Baños
+      const baths = prop.baths;
+      const bathsMatch = baths >= minBaths && baths <= maxBaths;
+
+      return textMatch && priceMatch && sqftMatch && bedsMatch && bathsMatch;
+    });
+
+    renderProperties(filtered);
+  };
+
+  function getFavorites() {
+    const favs = localStorage.getItem('favorites');
+    return favs ? JSON.parse(favs) : [];
+  }
+
+  function saveFavorites(favs) {
+    localStorage.setItem('favorites', JSON.stringify(favs));
+  }
+
+  function setupFavoriteButtons() {
+    const buttons = document.querySelectorAll('.favorite-btn');
+    buttons.forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const propertyId = btn.dataset.propertyId;
+        let favs = getFavorites();
+        if (favs.includes(propertyId)) {
+          favs = favs.filter(id => id !== propertyId);
+        } else {
+          favs.push(propertyId);
+        }
+        saveFavorites(favs);
+        const heartIcon = btn.querySelector('.heart-icon');
+        heartIcon.setAttribute('fill', favs.includes(propertyId) ? 'currentColor' : 'none');
+      });
+    });
+  }
+
+  // Initialize heart icons AND setup click handlers for all cards (static and filtered)
+  function initFavorites() {
+    // 1. Set the correct fill for all heart icons
+    document.querySelectorAll('.favorite-btn').forEach(btn => {
+      const propertyId = btn.dataset.propertyId;
+      const heartIcon = btn.querySelector('.heart-icon');
+      const isFavorite = getFavorites().includes(propertyId);
+      heartIcon.setAttribute('fill', isFavorite ? 'currentColor' : 'none');
+    });
+    // 2. Setup click handlers (remove old ones first to avoid duplicates)
+    document.querySelectorAll('.favorite-btn').forEach(btn => {
+      btn.replaceWith(btn.cloneNode(true)); // Remove existing event listeners
+    });
+    // 3. Re-query and add new handlers
+    document.querySelectorAll('.favorite-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const propertyId = btn.dataset.propertyId;
+        let favs = getFavorites();
+        if (favs.includes(propertyId)) {
+          favs = favs.filter(id => id !== propertyId);
+        } else {
+          favs.push(propertyId);
+        }
+        saveFavorites(favs);
+        const heartIcon = btn.querySelector('.heart-icon');
+        heartIcon.setAttribute('fill', favs.includes(propertyId) ? 'currentColor' : 'none');
+      });
+    });
+  }
+
+  // Call initFavorites on load
+  initFavorites();
+
+  // Re-setup favorite buttons after filtering
+  const originalRenderProperties = renderProperties;
+  renderProperties = function(props) {
+    originalRenderProperties(props);
+    initFavorites();
+  };
+
+  searchInput.addEventListener('input', applyAllFilters);
+});
+</script>

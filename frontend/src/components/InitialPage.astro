@@ -1,7 +1,7 @@
 ---
 import { PulsatingButton } from "@/components/ui/pulsating-button"
 ---
-<div id="initial-page" class="fixed inset-0 z-50 flex items-center justify-center bg-black">
+<div id="initial-page" class="fixed inset-0 z-[5000] flex items-center justify-center bg-black">
     <img src="/background.jpg" alt="Background" class="absolute inset-0 object-cover w-full h-full" />
     <img id="church_image" src="/church.png" alt="Church" class="relative z-10 object-cover w-full h-full" />
     <div class=" absolute w-full h-full bg-black z-20 opacity-55"></div>
@@ -11,7 +11,7 @@ import { PulsatingButton } from "@/components/ui/pulsating-button"
         <p class="mt-4 max-w-2xl text-xl text-center">
             Explora nuestra exclusiva selección de propiedades y encuentra el lugar perfecto para llamar hogar en la encantadora e histórica ciudad de Bayamo.
         </p>
-        <PulsatingButton id="enter-button" client:visible variant="ripple" className="bg-seashell-900 text-seashell-300 border-seashell-400 mt-4 text-base font-semibold">ENTRAR <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" data-icon="SvgArrowRight" aria-hidden="true"><path d="M21 12H3m11.573 6.427L21 12l-6.427-6.427"></path></svg></PulsatingButton> 
+        <PulsatingButton id="enter-button" client:visible variant="ripple" className="bg-seashell-900 text-seashell-300 border-seashell-400 mt-4 text-base font-semibold flex items-center justify-center w-36 gap-2">ENTRAR <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" data-icon="SvgArrowRight" aria-hidden="true"><path d="M21 12H3m11.573 6.427L21 12l-6.427-6.427"></path></svg></PulsatingButton> 
     </div>
 </div>
 

@@ -9,20 +9,94 @@ import Novedades from '@/components/Novedades.astro';
 import CasaAnimada from '@/components/CasaAnimada.astro';
 import Explorar from '@/components/Explorar.astro';
 import CircuitoEspecial from '@/components/CircuitoEspecial.astro';
+import AnuncioGoogle from '@/components/AnuncioGoogle.astro';
 import CTA from '@/components/CTA.astro';
 ---
 
 <Layout>
-	<main class="bg-seashell-50 text-seashell-900">
+	<main id="home-page" class="bg-background text-foreground">
 		<Navbar />
-		<Hero/>
-		<Casas/>
-		<Novedades/>
-		<CasaAnimada/>
-		<Explorar/>
-		<CircuitoEspecial/>
-		<CTA/>
-		<Recomendados/>
-		<Anuncio/>
+		<div id="hero-section" class="scroll-animate">
+			<Hero/>
+		</div>
+		<div id="casas-section" class="scroll-animate">
+			<Casas/>
+		</div>
+		<div id="novedades-section" class="scroll-animate">
+			<Novedades/>
+		</div>
+		<div id="casa-animada-section" class="scroll-animate">
+			<CasaAnimada/>
+		</div>
+		<div id="explorar-section" class="scroll-animate">
+			<Explorar/>
+		</div>
+		<div id="circuito-especial-section" class="scroll-animate">
+			<CircuitoEspecial/>
+		</div>
+		<div id="anuncio-google-section" class="scroll-animate">
+			<AnuncioGoogle/>
+		</div>
+		<div id="cta-section" class="scroll-animate">
+			<CTA/>
+		</div>
+		<div id="recomendados-section" class="scroll-animate">
+			<Recomendados/>
+		</div>
+		<div id="anuncio-section" class="scroll-animate">
+			<Anuncio/>
+		</div>
 	</main>
 </Layout>
+
+<script>
+  import { gsap } from 'gsap';
+  import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  document.addEventListener('DOMContentLoaded', () => {
+    // Hero section animation
+    const heroSection = document.getElementById('hero-section');
+    if (heroSection) {
+      gsap.fromTo(
+        heroSection.querySelector('h1'),
+        { opacity: 0, y: 50 },
+        { opacity: 1, y: 0, duration: 1, ease: 'power3.out' }
+      );
+      gsap.fromTo(
+        heroSection.querySelector('p'),
+        { opacity: 0, y: 30 },
+        { opacity: 1, y: 0, duration: 0.8, delay: 0.2, ease: 'power2.out' }
+      );
+      gsap.fromTo(
+        heroSection.querySelectorAll('a'),
+        { opacity: 0, y: 30 },
+        { opacity: 1, y: 0, duration: 0.8, delay: 0.4, stagger: 0.15, ease: 'power2.out' }
+      );
+    }
+
+    // Scroll-triggered animations for all sections
+    const sections = document.querySelectorAll('.scroll-animate');
+    sections.forEach((section, index) => {
+      // Skip hero since we already animated it
+      if (index === 0) return;
+
+      gsap.fromTo(
+        section,
+        { opacity: 0, y: 60 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.8,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: section,
+            start: 'top 80%',
+            toggleActions: 'play none none none'
+          }
+        }
+      );
+    });
+  });
+</script>
