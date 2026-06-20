@@ -6,10 +6,11 @@ export const prerender = false;
 export const POST: APIRoute = async ({ request }) => {
   try {
     const body = await request.json();
+    const { sqft, ...propertyData } = body;
     
     const { error } = await supabase
       .from('properties')
-      .insert([body]);
+      .insert([propertyData]);
       
     if (error) throw error;
     

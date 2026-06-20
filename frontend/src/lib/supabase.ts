@@ -13,7 +13,6 @@ export type Property = {
   location: string
   beds: number
   baths: number
-  sqft: number
   floors: number
   garage: boolean
   patio: boolean

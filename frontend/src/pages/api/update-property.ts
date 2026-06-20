@@ -14,10 +14,11 @@ export const POST: APIRoute = async ({ request, url }) => {
 
   try {
     const body = await request.json();
+    const { sqft, ...propertyData } = body;
     
     const { error } = await supabase
       .from('properties')
-      .update(body)
+      .update(propertyData)
       .eq('id', id);
       
     if (error) throw error;

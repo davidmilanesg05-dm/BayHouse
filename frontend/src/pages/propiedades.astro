@@ -5,11 +5,19 @@ import { supabase, type Property } from '../lib/supabase';
 
 export const prerender = false;
 
+const initialLocation = Astro.url.searchParams.get('ubicacion')?.trim() ?? '';
+
 // Obtener propiedades
 const { data: properties, error } = await supabase
   .from('properties')
   .select('*')
   .order('created_at', { ascending: false });
+
+const filteredProperties = initialLocation
+  ? properties?.filter((property) =>
+      (property.location || '').toLowerCase().includes(initialLocation.toLowerCase())
+    ) ?? []
+  : properties;
 ---
 
 <Layout>
@@ -43,7 +51,7 @@ const { data: properties, error } = await supabase
 
         <!-- Properties Grid -->
         <div id="properties-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {properties?.map((casa) => (
+          {filteredProperties?.map((casa) => (
             <div key={casa.id} class="relative block bg-card rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02]">
               <a href={`/casa/${casa.id}`} class="block">
                 <div class="relative h-56 overflow-hidden">
@@ -68,10 +76,6 @@ const { data: properties, error } = await supabase
                     <svg xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 -960 960 960" width="18px" fill="currentColor"><path d="M223.5-623.5Q200-647 200-680t23.5-56.5Q247-760 280-760t56.5 23.5Q360-713 360-680t-23.5 56.5Q313-600 280-600t-56.5-23.5ZM200-80q-17 0-28.5-11.5T160-120q-33 0-56.5-23.5T80-200v-240h120v-30q0-38 26-64t64-26q20 0 37 8t31 22l56 62q8 8 15.5 15t16.5 13h274v-326q0-14-10-24t-24-10q-6 0-11.5 2.5T664-790l-50 50q5 17 2 33.5T604-676L494-788q14-9 30-11.5t32 3.5l50-50q16-16 36.5-25t43.5-9q48 0 81 33t33 81v326h80v240q0 33-23.5 56.5T800-120q0 17-11.5 28.5T760-80H200Zm-40-120h640v-160H160v160Zm0 0h640-640Z"></path></svg>
                     <span class="text-sm">{casa.baths} Baños</span>
                   </div>
-                  <div class="flex items-center gap-1 text-muted-foreground">
-                    <svg xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 -960 960 960" width="18px" fill="currentColor"><path d="M208-120q-37 0-62.5-25.5T120-208v-548q0-29 27-40.5t47 8.5l90 90-54 54 28 28 54-54 104 104-54 54 28 28 54-54 104 104-54 54 28 28 54-54 104 104-54 54 28 28 54-54 80 80q20 20 8.5 47T756-120H208Zm32-120h332L240-572v332Z"></path></svg>
-                    <span class="text-sm">{casa.sqft} m²</span>
-                  </div>
                 </div>
               </div>
               </a>
@@ -82,7 +86,7 @@ const { data: properties, error } = await supabase
           )) || []}
         </div>
         
-        {!properties || properties.length === 0 ? (
+        {!filteredProperties || filteredProperties.length === 0 ? (
           <div class="py-20 text-center text-muted-foreground">
             <p class="text-lg font-semibold mb-2">No hay propiedades disponibles</p>
             <p class="text-sm">Vuelve más tarde o contacta con nosotros</p>
@@ -94,7 +98,7 @@ const { data: properties, error } = await supabase
   </main>
 </Layout>
 
-<script define:vars={{ allProperties: properties }}>
+<script define:vars={{ allProperties: properties, initialLocation }}>
 document.addEventListener('DOMContentLoaded', () => {
   const searchInput = document.getElementById('property-search-input');
   const propertiesGrid = document.getElementById('properties-grid');
@@ -108,8 +112,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const minPriceInput = document.getElementById('min-price');
   const maxPriceInput = document.getElementById('max-price');
-  const minSqftInput = document.getElementById('min-sqft');
-  const maxSqftInput = document.getElementById('max-sqft');
   const minBedsInput = document.getElementById('min-beds');
   const maxBedsInput = document.getElementById('max-beds');
   const minBathsInput = document.getElementById('min-baths');
@@ -117,6 +119,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
   if (!searchInput || !propertiesGrid || !filterModal) {
     return;
+  }
+
+  if (initialLocation) {
+    searchInput.value = initialLocation;
   }
 
   openFilterModalBtn.addEventListener('click', () => filterModal.classList.remove('hidden'));
@@ -128,8 +134,6 @@ document.addEventListener('DOMContentLoaded', () => {
   clearFiltersBtn.addEventListener('click', () => {
     minPriceInput.value = '';
     maxPriceInput.value = '';
-    minSqftInput.value = '';
-    maxSqftInput.value = '';
     minBedsInput.value = '';
     maxBedsInput.value = '';
     minBathsInput.value = '';
@@ -153,6 +157,14 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     return previousRow[previousRow.length - 1];
   };
+
+  const normalizeText = (value = '') =>
+    value
+      .toString()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .toLowerCase()
+      .trim();
 
   const createPropertyCardHTML = (casa) => {
     const isFavorite = getFavorites().includes(String(casa.id));
@@ -181,10 +193,7 @@ document.addEventListener('DOMContentLoaded', () => {
               <svg xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 -960 960 960" width="18px" fill="currentColor"><path d="M223.5-623.5Q200-647 200-680t23.5-56.5Q247-760 280-760t56.5 23.5Q360-713 360-680t-23.5 56.5Q313-600 280-600t-56.5-23.5ZM200-80q-17 0-28.5-11.5T160-120q-33 0-56.5-23.5T80-200v-240h120v-30q0-38 26-64t64-26q20 0 37 8t31 22l56 62q8 8 15.5 15t16.5 13h274v-326q0-14-10-24t-24-10q-6 0-11.5 2.5T664-790l-50 50q5 17 2 33.5T604-676L494-788q14-9 30-11.5t32 3.5l50-50q16-16 36.5-25t43.5-9q48 0 81 33t33 81v326h80v240q0 33-23.5 56.5T800-120q0 17-11.5 28.5T760-80H200Zm-40-120h640v-160H160v160Zm0 0h640-640Z"></path></svg>
               <span class="text-sm">${casa.baths} Baños</span>
             </div>
-            <div class="flex items-center gap-1 text-muted-foreground">
-              <svg xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 -960 960 960" width="18px" fill="currentColor"><path d="M208-120q-37 0-62.5-25.5T120-208v-548q0-29 27-40.5t47 8.5l90 90-54 54 28 28 54-54 104 104-54 54 28 28 54-54 104 104-54 54 28 28 54-54 80 80q20 20 8.5 47T756-120H208Zm32-120h332L240-572v332Z"></path></svg>
-              <span class="text-sm">${casa.sqft} m²</span>
-            </div>
+
           </div>
         </div>
         </a>
@@ -201,6 +210,7 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
     propertiesGrid.innerHTML = props.map(createPropertyCardHTML).join('');
+    initFavorites();
   };
 
   const parsePrice = (priceStr) => {
@@ -209,41 +219,37 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   const applyAllFilters = () => {
-    const searchTerm = searchInput.value.toLowerCase().trim();
+    const searchTerm = normalizeText(searchInput.value);
     const minPrice = parseFloat(minPriceInput.value) || 0;
     const maxPrice = parseFloat(maxPriceInput.value) || Infinity;
-    const minSqft = parseFloat(minSqftInput.value) || 0;
-    const maxSqft = parseFloat(maxSqftInput.value) || Infinity;
     const minBeds = parseFloat(minBedsInput.value) || 0;
     const maxBeds = parseFloat(maxBedsInput.value) || Infinity;
     const minBaths = parseFloat(minBathsInput.value) || 0;
     const maxBaths = parseFloat(maxBathsInput.value) || Infinity;
 
-    const threshold = 2; // Levenshtein threshold
-
-    const filtered = allProperties.filter(prop => {
+    const filtered = (allProperties || []).filter(prop => {
       // Filtro de Texto
-      const title = (prop.title || '').toLowerCase();
-      const location = (prop.location || '').toLowerCase();
+      const title = normalizeText(prop.title);
+      const location = normalizeText(prop.location);
+      const searchableText = `${title} ${location}`.trim();
+      const propertyWords = searchableText.split(/\s+/).filter(Boolean);
+
       let textMatch = true;
       if (searchTerm) {
-        const searchWords = searchTerm.split(' ').filter(w => w);
+        const searchWords = searchTerm.split(/\s+/).filter(Boolean);
         textMatch = searchWords.every(word => {
-          if (title.includes(word) || location.includes(word)) return true;
-          const titleWords = title.split(' ');
-          const locationWords = location.split(' ');
-          return titleWords.some(tWord => levenshtein(tWord, word) <= threshold) || 
-                 locationWords.some(lWord => levenshtein(lWord, word) <= threshold);
+          if (searchableText.includes(word)) return true;
+          if (word.length < 4) return false;
+
+          return propertyWords.some(propertyWord =>
+            propertyWord.length >= 4 && levenshtein(propertyWord, word) <= 1
+          );
         });
       }
 
       // Filtro de Precio
       const price = parsePrice(prop.price);
       const priceMatch = price >= minPrice && price <= maxPrice;
-
-      // Filtro de Metros Cuadrados
-      const sqft = prop.sqft;
-      const sqftMatch = sqft >= minSqft && sqft <= maxSqft;
 
       // Filtro de Habitaciones
       const beds = prop.beds;
@@ -253,7 +259,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const baths = prop.baths;
       const bathsMatch = baths >= minBaths && baths <= maxBaths;
 
-      return textMatch && priceMatch && sqftMatch && bedsMatch && bathsMatch;
+      return textMatch && priceMatch && bedsMatch && bathsMatch;
     });
 
     renderProperties(filtered);
@@ -320,13 +326,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Call initFavorites on load
   initFavorites();
-
-  // Re-setup favorite buttons after filtering
-  const originalRenderProperties = renderProperties;
-  renderProperties = function(props) {
-    originalRenderProperties(props);
-    initFavorites();
-  };
+  applyAllFilters();
 
   searchInput.addEventListener('input', applyAllFilters);
 });

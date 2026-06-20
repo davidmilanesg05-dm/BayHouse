@@ -11,6 +11,8 @@ import Explorar from '@/components/Explorar.astro';
 import CircuitoEspecial from '@/components/CircuitoEspecial.astro';
 import AnuncioGoogle from '@/components/AnuncioGoogle.astro';
 import CTA from '@/components/CTA.astro';
+
+export const prerender = false;
 ---
 
 <Layout>
@@ -33,9 +35,6 @@ import CTA from '@/components/CTA.astro';
 		</div>
 		<div id="circuito-especial-section" class="scroll-animate">
 			<CircuitoEspecial/>
-		</div>
-		<div id="anuncio-google-section" class="scroll-animate">
-			<AnuncioGoogle/>
 		</div>
 		<div id="cta-section" class="scroll-animate">
 			<CTA/>

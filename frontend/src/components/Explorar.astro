@@ -18,7 +18,8 @@
         "Reparto Ojeda",
         "El Polígono"
       ].map((reparto, index) => (
-        <div 
+        <a
+          href={`/propiedades?ubicacion=${encodeURIComponent(reparto)}`}
           key={index}
           class="reparto-card bg-card p-4 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300 border border-border flex items-center gap-4 cursor-pointer hover:border-border"
         >
@@ -26,7 +27,7 @@
             <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" data-icon="SvgMapPin" aria-hidden="true"><path d="M17.116 13.391h0L12 21l-5.258-7.8q-.1-.135-.186-.276l-.027-.04h0a6.459 6.459 0 1110.585.505zM12 7.175a2.3 2.3 0 102.3 2.3 2.3 2.3 0 00-2.3-2.3z"></path></svg>
           </div>
           <span class="text-base font-semibold text-foreground">{reparto}</span>
-        </div>
+        </a>
       ))}
     </div>
   </div>
